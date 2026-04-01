@@ -1,0 +1,1378 @@
+{
+  "updatedAt": "2026-04-01T09:46:19.819Z",
+  "createdAt": "2026-03-30T07:37:48.029Z",
+  "id": "4qu6Cp1rbxkjjQLT",
+  "name": "Scouting Kalender Fussball.de v2",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "ea584c5d-e159-48b5-a306-dad6d5c70823",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🕐 Trigger\nTäglich automatisch starten.\nStartet den gesamten Delete-and-Recreate Zyklus.",
+        "height": 130,
+        "width": 350,
+        "color": 6
+      },
+      "id": "3c64a2b5-83a2-4491-b39b-37020fba4438",
+      "name": "Note - Trigger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Stefan"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $now.minus({days: 90}).toISO() }}",
+        "timeMax": "={{ $now.plus({days: 60}).toISO() }}",
+        "options": {}
+      },
+      "id": "26f27ca8-8bdb-4de7-b3ae-2565b05b8830",
+      "name": "Alle Events laden",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        304
+      ],
+      "alwaysOutputData": true,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## 📅 Alle Events laden\nAlle Kalender-Events im Zeitraum ±90/+60 Tage aus dem Scouting-Kalender laden.",
+        "height": 130,
+        "width": 350,
+        "color": 4
+      },
+      "id": "e1f6dd66-f7a0-4b43-a825-4df1ea26bad8",
+      "name": "Note - Alle Events laden",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        384,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🔍 Filter [n8n-scouting]\nNur Events mit Tag `[n8n-scouting]` filtern.\nSchützt TM-Events (`[n8n-scouting-tm]`) und manuell erstellte Termine.",
+        "height": 130,
+        "width": 380,
+        "color": 4
+      },
+      "id": "2d4791d2-f508-4af8-926e-affc724b82cc",
+      "name": "Note - Filter",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        784,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "check-no-events",
+              "leftValue": "={{ $json.no_events }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c8c95833-6326-4da8-b0a8-0d53c33072c0",
+      "name": "Events zum Löschen?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d5198d8c-5d47-4bee-ab56-0d1b98eb7a4e",
+      "name": "Delete Loop",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1600,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Stefan"
+        },
+        "eventId": "={{ $json.eventId }}",
+        "options": {}
+      },
+      "id": "e24fea8d-93de-4bb3-a7ce-c810b1921609",
+      "name": "Event löschen",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2000,
+        304
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "unit": "seconds"
+      },
+      "id": "1d574600-c382-4248-9cf4-0c8e61d5603e",
+      "name": "Wait Delete",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🗑️ Events löschen\nAlle gefilterten fussball.de-Events einzeln löschen.\nMit Wait-Pause zwischen Batches (Rate Limit).",
+        "height": 130,
+        "width": 480
+      },
+      "id": "4182de7e-50c8-4694-b7d0-4d03c53c551a",
+      "name": "Note - Delete",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2027564139,
+          "mode": "list",
+          "cachedResultName": "Alle Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit#gid=2027564139"
+        },
+        "clear": "specificRows",
+        "startIndex": 2,
+        "rowsToDelete": 50000
+      },
+      "id": "82d3de3d-6b84-43ed-9026-3f2be19077e1",
+      "name": "Alle Spiele Sheet leeren",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1712,
+        640
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## 📋 Sheet leeren\n'Alle Spiele' Sheet komplett leeren (Header bleiben).\nVorbereitung für frische Daten.",
+        "height": 130,
+        "width": 420
+      },
+      "id": "6eb29338-72b6-434a-9a31-69998adeb4c9",
+      "name": "Note - Clear Sheet",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Overview",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk#gid=0"
+        },
+        "options": {}
+      },
+      "id": "9947b0ee-109e-4efe-b0bd-ec059e98de03",
+      "name": "Spielerliste laden",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2208,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 👥 Spielerliste laden\nAlle Spieler aus der Overview-Liste laden.\nLoop startet: Pro Spieler wird fussball.de gescrapt.",
+        "height": 130,
+        "width": 380,
+        "color": 6
+      },
+      "id": "d2be03c6-98d7-4c7e-851a-f757730623e3",
+      "name": "Note - Spielerliste",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2192,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "fb9bfc7e-a599-41f6-834e-088e8cc46987",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2608,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "id": "f4b14f32-7cc3-4627-bfb6-74a504de91d1",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        3008,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ (() => { let u = $json.team_url || ''; u = u.replace('/spielplandatum/', '/spielplan/'); if (!u.includes('saison_id')) { u = u.replace(/\\/?$/, '/saison_id/2025'); } return u; })() }}",
+        "options": {
+          "response": {},
+          "timeout": 30000
+        }
+      },
+      "id": "41db2f5d-f1ee-42a9-9929-2110c32bc40c",
+      "name": "HTTP Spielplan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3408,
+        704
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## 🌐 Spielplan laden & parsen\nfussball.de Spielplan-Seite laden → HTML parsen.\nNur Spiele im Zeitraum heute bis +60 Tage.\nSpieler-Sheet leeren → dann scrapen.",
+        "height": 140,
+        "width": 500,
+        "color": 6
+      },
+      "id": "2da7e3cb-1b60-4f06-94f2-d06d91ec5e8d",
+      "name": "Note - HTTP Spielplan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3392,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "condition-keine-spiele",
+              "leftValue": "={{ $json.keine_spiele }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7adda502-bd1e-4dd5-928b-e58f7b849834",
+      "name": "Spiele vorhanden?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4208,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.ortsangabe ? $json.ortsangabe : 'https://www.fussball.de' }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "e038b3c9-52af-4967-94a2-4b2e1922ff00",
+      "name": "HTTP Spieldetails",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4608,
+        608
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Alle Spiele",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "01f10f0a-e3f8-4636-941a-465888e98e28",
+      "name": "Alle Spiele lesen",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        5408,
+        912
+      ],
+      "alwaysOutputData": true,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## ✅ Dedup & Kalender-Events erstellen\nCross-Player Dedup gegen 'Alle Spiele' Sheet.\n- **Duplikat?** → Spielername an Event anhängen (Update)\n- **Neu?** → FC Bayern Check → Event erstellen\n→ In Spieler-Sheet + Alle Spiele schreiben",
+        "width": 700,
+        "color": 6
+      },
+      "id": "01ca5703-dd9e-45b1-9ab3-0525d4b18eef",
+      "name": "Note - Dedup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5792,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 3,
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "dedup-check",
+              "leftValue": "={{ $json.is_duplicate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e2b7a2ed-17d0-4f06-84c9-0cab3a057a2c",
+      "name": "Schon erstellt?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6208,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Stefan"
+        },
+        "eventId": "={{ $json.existing_event_id }}",
+        "updateFields": {
+          "description": "=Wettbewerb: {{ $json.wettbewerb }}\nGegner: {{ $json.gegner }}\nAcademy-Spieler: {{ $json.alle_spieler }}\n\n[n8n-scouting]"
+        }
+      },
+      "id": "6f777dd8-fd13-4301-ab44-b0ce4ff680c1",
+      "name": "Event updaten (Spieler)",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        6608,
+        512
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Alle Spiele",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "match_id": "={{ $json.match_id }}",
+            "spieler_namen": "={{ $json.alle_spieler }}"
+          },
+          "matchingColumns": [
+            "match_id"
+          ],
+          "schema": [
+            {
+              "id": "match_id",
+              "displayName": "match_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a6b942df-0217-4a9e-badf-8af6e1a13299",
+      "name": "Alle Spiele updaten",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        7008,
+        512
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.spieler_name }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "match_id": "={{ $json.match_id }}",
+            "wettbewerb": "={{ $json.wettbewerb }}",
+            "gegner": "={{ $json.gegner }}",
+            "titel": "={{ $json.titel }}",
+            "datum": "={{ $json.datum }}",
+            "uhrzeit": "={{ $json.uhrzeit }}",
+            "ortsangabe": "={{ $json.ortsangabe }}",
+            "spielort": "={{ $json.stadion_adresse }}",
+            "start_iso": "={{ $json.start_isogoogle }}",
+            "google_event_id": "={{ $json.existing_event_id }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "93bd1c29-40c1-4fdd-bce5-616eec2e7269",
+      "name": "Spieler Sheet (Dedup)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        7408,
+        512
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bayern-check",
+              "leftValue": "={{ $json.mein_team }}",
+              "rightValue": "FC Bayern München",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4ca4cefc-e42d-4efb-aeff-243024bcbdfa",
+      "name": "FC Bayern Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6608,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Stefan"
+        },
+        "start": "={{ $json.start_isogoogle }}",
+        "end": "={{ DateTime.fromISO($json.start_isogoogle).plus({ hours: 2 }).toISO({ includeOffset: false }) }}",
+        "additionalFields": {
+          "attendees": [
+            "tim.hungerbach@gokixx.de"
+          ],
+          "description": "=Wettbewerb: {{ $json.wettbewerb }}\nGegner: {{ $json.gegner }}\nAcademy-Spieler: {{ $json.alle_spieler }}\n\n[n8n-scouting]",
+          "location": "={{ $json.stadion_adresse }}",
+          "summary": "={{ $json.titel }}"
+        }
+      },
+      "id": "fd8d437c-e466-48e6-8833-1c5c7b983399",
+      "name": "Event erstellen (Bayern)",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        7008,
+        800
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Stefan"
+        },
+        "start": "={{ $json.start_isogoogle }}",
+        "end": "={{ DateTime.fromISO($json.start_isogoogle).plus({ hours: 2 }).toISO({ includeOffset: false }) }}",
+        "additionalFields": {
+          "attendees": [],
+          "description": "=Wettbewerb: {{ $json.wettbewerb }}\nGegner: {{ $json.gegner }}\nAcademy-Spieler: {{ $json.alle_spieler }}\n\n[n8n-scouting]",
+          "location": "={{ $json.stadion_adresse }}",
+          "summary": "={{ $json.titel }}"
+        }
+      },
+      "id": "d3638905-910e-4ff6-b2f9-91ea7ee6a101",
+      "name": "Event erstellen (Andere)",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        7008,
+        1104
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('FC Bayern Check').item.json.spieler_name }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "match_id": "={{ $('FC Bayern Check').item.json.match_id }}",
+            "wettbewerb": "={{ $('FC Bayern Check').item.json.wettbewerb }}",
+            "gegner": "={{ $('FC Bayern Check').item.json.gegner }}",
+            "titel": "={{ $('FC Bayern Check').item.json.titel }}",
+            "datum": "={{ $('FC Bayern Check').item.json.datum }}",
+            "uhrzeit": "={{ $('FC Bayern Check').item.json.uhrzeit }}",
+            "ortsangabe": "={{ $('FC Bayern Check').item.json.ortsangabe }}",
+            "spielort": "={{ $('FC Bayern Check').item.json.stadion_adresse }}",
+            "start_iso": "={{ $('FC Bayern Check').item.json.start_isogoogle }}",
+            "google_event_id": "={{ $json.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "match_id",
+              "displayName": "match_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "wettbewerb",
+              "displayName": "wettbewerb",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "gegner",
+              "displayName": "gegner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "titel",
+              "displayName": "titel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "datum",
+              "displayName": "datum",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "uhrzeit",
+              "displayName": "uhrzeit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ortsangabe",
+              "displayName": "ortsangabe",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "spielort",
+              "displayName": "spielort",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "start_iso",
+              "displayName": "start_iso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "google_event_id",
+              "displayName": "google_event_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "36b0490d-0bf5-466e-8a06-e10a8b169d1e",
+      "name": "Spieler Sheet schreiben",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        7408,
+        800
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Alle Spiele",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "match_id": "={{ $('FC Bayern Check').item.json.match_id }}",
+            "titel": "={{ $('FC Bayern Check').item.json.titel }}",
+            "datum": "={{ $('FC Bayern Check').item.json.datum }}",
+            "uhrzeit": "={{ $('FC Bayern Check').item.json.uhrzeit }}",
+            "spieler_namen": "={{ $('FC Bayern Check').item.json.alle_spieler }}",
+            "google_event_id": "={{ $json.google_event_id }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "9462edae-4db2-4b9f-bd63-94e1ddc3d723",
+      "name": "Alle Spiele schreiben",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        7808,
+        800
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## 🏟️ Spieldetails & Adressen\nSpieldetail-Seite laden → Adressen parsen (Ort, PLZ, Stadion).\nDaten normalisieren und aufbereiten.",
+        "height": 130,
+        "width": 560,
+        "color": 6
+      },
+      "id": "5991fa27-4e0b-4160-a517-eefc8f461f53",
+      "name": "Note - Phase 2 Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4592,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// Filter: Nur Workflow-erstellte Events behalten\n// ============================================================\n// Erkennt Events anhand von:\n// 1. [n8n-scouting]-Tag (neue Events)\n// 2. \"Wettbewerb:\" UND \"Gegner:\" in der Beschreibung (alte Events)\n// Manuelle Kalendereinträge bleiben unberührt!\n// ============================================================\n\nconst items = $input.all();\nconst scoutingEvents = [];\n\nfor (const item of items) {\n    const desc = (item.json.description || '').toString();\n    const summary = (item.json.summary || '').toString();\n    const eventId = item.json.id || item.json.eventId || '';\n    \n    if (!eventId) continue;\n    \n    // Prüfe ob Event vom Workflow erstellt wurde\n    const hasNewTag = desc.includes('[n8n-scouting]');\n    const hasOldFormat = desc.includes('Wettbewerb:') && desc.includes('Gegner:') && desc.includes('Academy-Spieler:');\n    \n    if (hasNewTag || hasOldFormat) {\n        scoutingEvents.push({\n            json: {\n                eventId: eventId,\n                summary: summary,\n                description: desc\n            }\n        });\n    }\n}\n\n// Wenn keine Scouting-Events vorhanden, leeres Signal senden\nif (scoutingEvents.length === 0) {\n    return [{ json: { no_events: true, eventId: '' } }];\n}\n\nreturn scoutingEvents;"
+      },
+      "id": "805281db-ff01-4879-a32a-3deec19b9acc",
+      "name": "Nur Scouting-Events filtern",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// fussball.de Match-Detail-Seite Parser v2\n// ============================================================\n\ntry {\n    const masterSpiele = $(\"Spielplan parsen\").all();\n    const httpAntworten = $input.all();\n    const results = [];\n\n    for (let i = 0; i < masterSpiele.length; i++) {\n        let itemJson = JSON.parse(JSON.stringify(masterSpiele[i].json));\n        let heimTeam = itemJson.titel ? itemJson.titel.split(' - ')[0].trim() : \"Unbekannt\";\n        let finaleAdresse = heimTeam;\n\n        try {\n            const responseItem = httpAntworten[i];\n            if (responseItem && itemJson.ortsangabe) {\n                let html = \"\";\n                if (responseItem.binary && responseItem.binary.data) {\n                    html = Buffer.from(responseItem.binary.data.data, 'base64').toString('utf-8');\n                } else {\n                    html = responseItem.json.data || responseItem.json.body || \"\";\n                }\n\n                if (html) {\n                    const mapsLinkRegex = /<a[^>]*href=\"https?:\\/\\/(?:www\\.)?google\\.[a-z]+\\/maps\\?q=[^\"]*\"[^>]*>([\\s\\S]*?)<\\/a>/i;\n                    const mapsMatch = html.match(mapsLinkRegex);\n                    if (mapsMatch && mapsMatch[1]) {\n                        let adressText = mapsMatch[1].replace(/<[^>]*>/g, '').trim();\n                        if (adressText.length > 3) finaleAdresse = adressText;\n                    }\n\n                    if (finaleAdresse === heimTeam) {\n                        const mapsUrlRegex = /google\\.[a-z]+\\/maps\\?q=([^\"&]+)/i;\n                        const urlMatch = html.match(mapsUrlRegex);\n                        if (urlMatch && urlMatch[1]) {\n                            let decoded = decodeURIComponent(urlMatch[1].replace(/\\+/g, ' ')).trim();\n                            if (decoded.length > 3) finaleAdresse = decoded;\n                        }\n                    }\n\n                    if (finaleAdresse === heimTeam) {\n                        const venueRegex = /class=\"[^\"]*venue[^\"]*\"[\\s\\S]*?<\\/div>/i;\n                        const venueMatch = html.match(venueRegex);\n                        if (venueMatch) {\n                            const addressInVenue = venueMatch[0].replace(/<[^>]*>/g, ' ').trim();\n                            const plzMatch = addressInVenue.match(/(\\d{5}\\s+[A-Za-z\\u00c4\\u00d6\\u00dc\\u00e4\\u00f6\\u00fc\\u00df]+)/);\n                            if (plzMatch) finaleAdresse = addressInVenue.replace(/\\s+/g, ' ').trim();\n                        }\n                    }\n                }\n            }\n        } catch (e) {}\n\n        itemJson.stadion_adresse = finaleAdresse;\n        delete itemJson.data;\n        delete itemJson.body;\n        results.push({ json: itemJson, pairedItem: { item: i } });\n    }\n\n    return results;\n} catch (error) {\n    const masterSpiele = $(\"Spielplan parsen\").all();\n    return masterSpiele.map((item, i) => {\n        const j = JSON.parse(JSON.stringify(item.json));\n        j.stadion_adresse = j.titel ? j.titel.split(' - ')[0].trim() : \"Unbekannt\";\n        return { json: j, pairedItem: { item: i } };\n    });\n}"
+      },
+      "id": "addc586c-bb4b-4d83-9d9b-1c1e6b698080",
+      "name": "Adressen parsen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5008,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// Daten-Assembler: Bereitet Spiele für Calendar + Sheets vor\n// ============================================================\n\nconst items = $input.all();\nconst results = [];\n\nfor (let i = 0; i < items.length; i++) {\n    const j = items[i].json;\n    results.push({\n        json: {\n            match_id: j.match_id || \"\",\n            mein_team: j.mein_team || \"\",\n            spieler_name: j.spieler_name || \"\",\n            wettbewerb: j.wettbewerb || \"\",\n            gegner: j.gegner || \"\",\n            titel: j.titel || \"\",\n            datum: j.datum || \"\",\n            uhrzeit: j.uhrzeit || \"\",\n            start_isogoogle: j.start_isogoogle || \"\",\n            ortsangabe: j.ortsangabe || \"\",\n            stadion_adresse: j.stadion_adresse || \"\",\n            keine_spiele: j.keine_spiele || false\n        },\n        pairedItem: { item: i }\n    });\n}\n\nreturn results;"
+      },
+      "id": "fcd03833-bc1c-49e6-9ad3-844b72295582",
+      "name": "Daten aufbereiten",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5408,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// Cross-Player Dedup: Prüft ob Spiel schon von anderem Spieler\n// in diesem Durchlauf erstellt wurde.\n// ============================================================\n\nconst spiele = $(\"Daten aufbereiten\").all();\nconst alleSpiele = $(\"Alle Spiele lesen\").all().filter(r => r.json && r.json.match_id);\nconst results = [];\n\nfor (const spielItem of spiele) {\n    const s = spielItem.json;\n    const matchId = String(s.match_id || \"\");\n    if (!matchId || matchId === \"SKIP\" || matchId === \"ERROR\") continue;\n\n    let found = null;\n    for (const row of alleSpiele) {\n        if (String(row.json.match_id) === matchId) {\n            found = row.json;\n            break;\n        }\n    }\n\n    if (found && found.google_event_id) {\n        let alteSpieler = found.spieler_namen || \"\";\n        let spielerListe = alteSpieler ? alteSpieler.split(\", \").filter(x => x.trim()) : [];\n        if (!spielerListe.includes(s.spieler_name)) {\n            spielerListe.push(s.spieler_name);\n        }\n        results.push({\n            json: {\n                ...s,\n                is_duplicate: true,\n                existing_event_id: found.google_event_id,\n                alle_spieler: spielerListe.join(\", \")\n            }\n        });\n    } else {\n        results.push({\n            json: {\n                ...s,\n                is_duplicate: false,\n                existing_event_id: \"\",\n                alle_spieler: s.spieler_name\n            }\n        });\n    }\n}\n\nif (results.length === 0) {\n    return [{ json: { is_duplicate: false, match_id: \"SKIP\", keine_spiele: true } }];\n}\n\nreturn results;"
+      },
+      "id": "1288aed7-60b0-4aaf-a5d5-f9569f30ce2a",
+      "name": "Cross-Player Dedup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5808,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// fussball.de Spielplan Parser v6 (Cleanup & Recreate)\n// ============================================================\n\ntry {\n    const results = [];\n    const heute = new Date();\n    heute.setHours(0, 0, 0, 0);\n    const limitDatum = new Date();\n    limitDatum.setDate(heute.getDate() + 60);\n    limitDatum.setHours(23, 59, 59, 999);\n    const inputItems = $input.all();\n\n    let meinTeam = \"Unbekannt\";\n    let spielerName = \"Unbekannt\";\n    let altersklasse = \"\";\n    try {\n        const loopData = $(\"Loop Over Items\").item.json;\n        meinTeam = loopData.team_name || \"Unbekannt\";\n        spielerName = loopData.player_name || \"Unbekannt\";\n        altersklasse = (loopData.team_altersklasse || \"\").trim();\n    } catch (e) {}\n\n    function normalizeTeam(name) {\n        return name.toLowerCase()\n            .replace(/\\u00e4/g, 'ae').replace(/\\u00f6/g, 'oe')\n            .replace(/\\u00fc/g, 'ue').replace(/\\u00df/g, 'ss')\n            .replace(/[^a-z0-9]/g, '');\n    }\n\n    function stripReserveSuffix(norm) {\n        const suffixes = ['u23','u21','u19','u17','u16','iii','ii','iv'];\n        for (const s of suffixes) {\n            if (norm.endsWith(s)) return norm.slice(0, -s.length);\n        }\n        return norm;\n    }\n\n    function teamsMatch(a, b) {\n        const na = normalizeTeam(a);\n        const nb = normalizeTeam(b);\n        if (na === nb) return true;\n        if (na.length >= 6 && nb.length >= 6) {\n            if (na.includes(nb) || nb.includes(na)) return true;\n        }\n        const ba = stripReserveSuffix(na);\n        const bb = stripReserveSuffix(nb);\n        if (ba && bb && ba.length >= 6 && bb.length >= 6) {\n            if (ba === bb || ba.includes(bb) || bb.includes(ba)) return true;\n        }\n        return false;\n    }\n\n    function addAltersklasse(name, ak) {\n        if (!ak) return name;\n        if (name.toUpperCase().includes(ak.toUpperCase())) return name;\n        return name + \" \" + ak;\n    }\n\n    for (let i = 0; i < inputItems.length; i++) {\n        const item = inputItems[i].json;\n        let html = item.data || item.body || \"\";\n        if (!html) continue;\n        html = html.replace(/<script[\\s\\S]*?<\\/script>/gi, '');\n        html = html.replace(/<!--[\\s\\S]*?-->/g, '');\n        const rows = html.match(/<tr[^>]*>[\\s\\S]*?<\\/tr>/gi) || [];\n\n        let currentTag = \"\";\n        let currentMonat = \"\";\n        let currentJahr = \"\";\n        let currentUhrzeit = \"\";\n        let currentWettbewerb = \"\";\n        let currentMatchNumId = \"\";\n\n        for (const row of rows) {\n            if (row.includes('row-headline') && row.includes('visible-small')) {\n                const hlMatch = row.match(/(\\d{2})\\.(\\d{2})\\.(\\d{4})\\s*-\\s*(\\d{2}):(\\d{2})\\s*Uhr\\s*\\|\\s*(.+?)\\s*</);\n                if (hlMatch) {\n                    currentTag = hlMatch[1];\n                    currentMonat = hlMatch[2];\n                    currentJahr = hlMatch[3];\n                    currentUhrzeit = hlMatch[4] + \":\" + hlMatch[5];\n                    currentWettbewerb = hlMatch[6].replace(/<[^>]*>/g, '').trim();\n                }\n                continue;\n            }\n            if (row.includes('row-competition')) {\n                const dateMatch = row.match(/(\\d{2})\\.(\\d{2})\\.(\\d{2,4})\\s*\\|/);\n                if (dateMatch) {\n                    currentTag = dateMatch[1];\n                    currentMonat = dateMatch[2];\n                    currentJahr = dateMatch[3];\n                    if (currentJahr.length === 2) currentJahr = \"20\" + currentJahr;\n                }\n                const timeMatch = row.match(/(?:\\||&nbsp;)\\s*(\\d{2}):(\\d{2})\\s*</);\n                if (timeMatch) {\n                    currentUhrzeit = timeMatch[1] + \":\" + timeMatch[2];\n                } else {\n                    const timeFB = row.match(/(\\d{2}):(\\d{2})/);\n                    if (timeFB) currentUhrzeit = timeFB[1] + \":\" + timeFB[2];\n                }\n                const compMatch = row.match(/column-team[\\s\\S]*?<a[^>]*>([\\s\\S]*?)<\\/a>/i);\n                if (compMatch) {\n                    currentWettbewerb = compMatch[1].replace(/<[^>]*>/g, '').trim();\n                }\n                const matchNumMatch = row.match(/(\\d{9,})/);\n                if (matchNumMatch) currentMatchNumId = matchNumMatch[1];\n                continue;\n            }\n            if (!row.includes('column-club')) continue;\n            if (!row.includes('column-colon')) continue;\n            if (!currentTag || !currentMonat || !currentJahr || !currentUhrzeit) continue;\n\n            const spielDatum = new Date(parseInt(currentJahr), parseInt(currentMonat) - 1, parseInt(currentTag));\n            if (spielDatum < heute || spielDatum > limitDatum) continue;\n\n            const clubCells = row.match(/<td[^>]*class=\"[^\"]*column-club[^\"]*\"[^>]*>[\\s\\S]*?<\\/td>/gi) || [];\n            let heimTeam = \"\";\n            let gastTeam = \"\";\n            if (clubCells.length >= 2) {\n                const nameRegex = /<div[^>]*class=\"[^\"]*club-name[^\"]*\"[^>]*>\\s*([\\s\\S]*?)\\s*<\\/div>/i;\n                const heimMatch = clubCells[0].match(nameRegex);\n                const gastMatch = clubCells[1].match(nameRegex);\n                if (heimMatch) heimTeam = heimMatch[1].replace(/<[^>]*>/g, '').trim();\n                if (gastMatch) gastTeam = gastMatch[1].replace(/<[^>]*>/g, '').trim();\n            }\n            if (!heimTeam || !gastTeam) {\n                const altMatches = [...row.matchAll(/data-alt=\"([^\"]+)\"/gi)];\n                if (altMatches.length >= 2) {\n                    if (!heimTeam) heimTeam = altMatches[0][1];\n                    if (!gastTeam) gastTeam = altMatches[1][1];\n                }\n            }\n            if (!heimTeam || !gastTeam) continue;\n            if (!teamsMatch(heimTeam, meinTeam) && !teamsMatch(gastTeam, meinTeam)) continue;\n\n            let ortsangabe = \"\";\n            const detailMatch = row.match(/<td[^>]*class=\"[^\"]*column-detail[^\"]*\"[^>]*>[\\s\\S]*?href=\"([^\"]+)\"/i);\n            if (detailMatch) ortsangabe = detailMatch[1];\n            if (!ortsangabe) {\n                const scoreMatch = row.match(/<td[^>]*class=\"[^\"]*column-score[^\"]*\"[^>]*>[\\s\\S]*?href=\"([^\"]+)\"/i);\n                if (scoreMatch) ortsangabe = scoreMatch[1];\n            }\n            if (!ortsangabe) {\n                const anySpielLink = row.match(/href=\"([^\"]*\\/spiel\\/[^\"]+)\"/i);\n                if (anySpielLink) ortsangabe = anySpielLink[1];\n            }\n            if (ortsangabe && ortsangabe.startsWith('/')) ortsangabe = \"https://www.fussball.de\" + ortsangabe;\n\n            const heimTeamDisplay = addAltersklasse(heimTeam, altersklasse);\n            const gastTeamDisplay = addAltersklasse(gastTeam, altersklasse);\n            let wettbewerbDisplay = currentWettbewerb || \"Spiel\";\n            if (altersklasse && !wettbewerbDisplay.toUpperCase().includes(altersklasse.toUpperCase())) {\n                wettbewerbDisplay = altersklasse + \" \" + wettbewerbDisplay;\n            }\n            const gegner = teamsMatch(heimTeam, meinTeam) ? gastTeamDisplay : heimTeamDisplay;\n            const matchId = currentMatchNumId || (\"fde_\" + normalizeTeam(heimTeam).substring(0,12) + \"_\" + normalizeTeam(gastTeam).substring(0,12) + \"_\" + normalizeTeam(currentWettbewerb).substring(0,8));\n            const start_isogoogle = currentJahr + \"-\" + currentMonat + \"-\" + currentTag + \"T\" + currentUhrzeit + \":00\";\n            const datumKey = currentTag + \".\" + currentMonat + \".\" + currentJahr;\n\n            results.push({\n                json: {\n                    match_id: matchId, mein_team: meinTeam, spieler_name: spielerName,\n                    wettbewerb: wettbewerbDisplay, gegner: gegner,\n                    titel: heimTeamDisplay + \" - \" + gastTeamDisplay,\n                    datum: datumKey, uhrzeit: currentUhrzeit,\n                    start_isogoogle: start_isogoogle, ortsangabe: ortsangabe,\n                    keine_spiele: false\n                },\n                pairedItem: { item: 0 }\n            });\n            currentMatchNumId = \"\";\n        }\n    }\n\n    if (results.length === 0) {\n        return [{ json: { match_id: \"SKIP\", mein_team: meinTeam, spieler_name: spielerName, wettbewerb: \"\", gegner: \"\", titel: \"\", datum: \"\", uhrzeit: \"\", start_isogoogle: \"\", ortsangabe: \"\", keine_spiele: true }, pairedItem: { item: 0 } }];\n    }\n    return results;\n\n} catch (error) {\n    return [{ json: { match_id: \"ERROR\", mein_team: \"Fehler\", spieler_name: \"Fehler\", wettbewerb: \"\", gegner: \"\", titel: \"\", datum: \"\", uhrzeit: \"\", start_isogoogle: \"\", ortsangabe: \"\", keine_spiele: true, error_message: error.message }, pairedItem: { item: 0 } }];\n}"
+      },
+      "id": "7c1d75c8-e6da-4044-978d-07437759271d",
+      "name": "Spielplan parsen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3808,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "a1b2c3d4-wait-rate-limit-0001",
+      "name": "Wait Rate Limit",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "mode": "list",
+          "cachedResultName": "Scouting Kalender Fußball.de Spiele",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.player_name }}",
+          "mode": "name"
+        },
+        "clear": "specificRows",
+        "startIndex": 2,
+        "rowsToDelete": 50000
+      },
+      "id": "b2c3d4e5-clear-spieler-sheet",
+      "name": "Spieler Sheet leeren",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2864,
+        704
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## 📝 Kalender & Sheets schreiben\nFC Bayern → mit Attendee (tim.hungerbach@gokixx.de).\nAndere → ohne Attendee.\n→ Spieler-Sheet + Alle Spiele Sheet pro Event.",
+        "height": 130,
+        "width": 900
+      },
+      "id": "8d42f838-53b9-417d-87fd-703c6c2aea95",
+      "name": "Note - Kalender erstellen",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6960,
+        688
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Alle Events laden",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Events zum Löschen?": {
+      "main": [
+        [
+          {
+            "node": "Delete Loop",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alle Spiele Sheet leeren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Loop": {
+      "main": [
+        [
+          {
+            "node": "Wait Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Event löschen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event löschen": {
+      "main": [
+        [
+          {
+            "node": "Wait Delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Delete": {
+      "main": [
+        [
+          {
+            "node": "Delete Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alle Spiele Sheet leeren": {
+      "main": [
+        [
+          {
+            "node": "Spielerliste laden",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spielerliste laden": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Spielplan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spiele vorhanden?": {
+      "main": [
+        [
+          {
+            "node": "HTTP Spieldetails",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schon erstellt?": {
+      "main": [
+        [
+          {
+            "node": "Event updaten (Spieler)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FC Bayern Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event updaten (Spieler)": {
+      "main": [
+        [
+          {
+            "node": "Alle Spiele updaten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alle Spiele updaten": {
+      "main": [
+        [
+          {
+            "node": "Spieler Sheet (Dedup)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spieler Sheet (Dedup)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FC Bayern Check": {
+      "main": [
+        [
+          {
+            "node": "Event erstellen (Bayern)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Event erstellen (Andere)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event erstellen (Bayern)": {
+      "main": [
+        [
+          {
+            "node": "Spieler Sheet schreiben",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event erstellen (Andere)": {
+      "main": [
+        [
+          {
+            "node": "Spieler Sheet schreiben",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spieler Sheet schreiben": {
+      "main": [
+        [
+          {
+            "node": "Alle Spiele schreiben",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alle Spiele schreiben": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alle Events laden": {
+      "main": [
+        [
+          {
+            "node": "Nur Scouting-Events filtern",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nur Scouting-Events filtern": {
+      "main": [
+        [
+          {
+            "node": "Events zum Löschen?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Spieldetails": {
+      "main": [
+        [
+          {
+            "node": "Adressen parsen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adressen parsen": {
+      "main": [
+        [
+          {
+            "node": "Daten aufbereiten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daten aufbereiten": {
+      "main": [
+        [
+          {
+            "node": "Alle Spiele lesen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alle Spiele lesen": {
+      "main": [
+        [
+          {
+            "node": "Cross-Player Dedup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cross-Player Dedup": {
+      "main": [
+        [
+          {
+            "node": "Schon erstellt?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Spielplan": {
+      "main": [
+        [
+          {
+            "node": "Spielplan parsen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spielplan parsen": {
+      "main": [
+        [
+          {
+            "node": "Spiele vorhanden?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Rate Limit": {
+      "main": [
+        [
+          {
+            "node": "Alle Spiele Sheet leeren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Spieler Sheet leeren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spieler Sheet leeren": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate"
+  },
+  "meta": null,
+  "versionId": "61c1319e-fd15-4933-bea4-aea2fb908224",
+  "tags": []
+}
