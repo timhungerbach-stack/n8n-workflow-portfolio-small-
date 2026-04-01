@@ -1,0 +1,775 @@
+{
+  "updatedAt": "2026-03-19T11:16:47.928Z",
+  "createdAt": "2026-02-06T08:50:11.034Z",
+  "id": "CY0Nxrd7ux0a6t7L",
+  "name": "Office Belegung Tracker",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo",
+          "mode": "list",
+          "cachedResultName": "Officebesetzung_Slack_n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Office Plan",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Montag": "={{ $json.Montag }}",
+            "Dienstag": "={{ $json.Dienstag }}",
+            "Mittwoch": "={{ $json.Mittwoch }}",
+            "Donnerstag": "={{ $json.Donnerstag }}",
+            "Freitag": "={{ $json.Freitag }}",
+            "Samstag": "={{ $json.Samstag }}",
+            "Sonntag": "={{ $json.Sonntag }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Montag",
+              "displayName": "Montag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Dienstag",
+              "displayName": "Dienstag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mittwoch",
+              "displayName": "Mittwoch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Donnerstag",
+              "displayName": "Donnerstag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Freitag",
+              "displayName": "Freitag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Samstag",
+              "displayName": "Samstag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sonntag",
+              "displayName": "Sonntag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a1b3d238-00fa-467c-85d4-956b3a048e63",
+      "name": "In Google Sheets eintragen",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        4464,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];\nconst planung = { Montag: [], Dienstag: [], Mittwoch: [], Donnerstag: [], Freitag: [] };\nconst MAX_PLAETZE = 12;\n\n// Liste der Seniors (jeder, der nicht hier drin steht, wird als Praktikant gewertet)\nconst SENIORS_LIST = [\n  \"Felix Funken\", \"Robin Bermbach\", \"Nils Hinzmann\", \n  \"Leonard Feldkamp\", \"Hendrik Schons\", \"Daniel Ries\", \n  \"Lennart Klein\", \"Maik Stein\", \"Julius Gräfe\",\n  \"Benno Duvenhorst\", \"Peter Marek\", \"Jannes Hundertmark\", \n  \"Stefan Göke\", \"Florian Schell\"\n];\n\n// 1. Daten sammeln (Wer ist im Office?)\nfor (const item of $input.all()) {\n  tage.forEach(tag => {\n    const status = (item.json[tag] || \"\").toLowerCase();\n    // Wir zählen jeden, bei dem \"office\" im Status vorkommt\n    if (status.includes('office')) {\n      planung[tag].push(item.json.Name);\n    }\n  });\n}\n\n// 2. Slack-Nachricht zusammenbauen\nlet slackText = \"Hallo zusammen <!channel>! 👋\\nAnbei die Office-Besetzung für die nächste Woche:\\n\\n\";\n\ntage.forEach(tag => {\n  const tagesListe = planung[tag];\n  const belegtePlaetze = tagesListe.length;\n  \n  // Warnmeldung generieren, falls das Limit erreicht oder überschritten ist\n  let warnung = \"\";\n  if (belegtePlaetze === MAX_PLAETZE) {\n    warnung = \" ⚠️ *VOLL BELEGT!*\";\n  } else if (belegtePlaetze > MAX_PLAETZE) {\n    warnung = ` 🚨 *ÜBERBELEGT!* (um ${belegtePlaetze - MAX_PLAETZE} Personen)`;\n  }\n\n  // Zeile formatieren: Wochentag (X/12): + Warnung\n  slackText += `*${tag}* (${belegtePlaetze}/${MAX_PLAETZE}):${warnung}\\n`;\n\n  if (belegtePlaetze === 0) {\n    // Falls niemand da ist\n    slackText += `_Keiner im Büro_\\n\\n`;\n  } else {\n    // Aufteilung in Seniors und Praktikanten\n    const seniors = tagesListe.filter(name => SENIORS_LIST.includes(name));\n    const praktikanten = tagesListe.filter(name => !SENIORS_LIST.includes(name));\n\n    // Kategorien nur ausgeben, wenn auch Personen darin vorhanden sind (mit fettgedruckten Labels)\n    if (praktikanten.length > 0) {\n      slackText += `*Praktikanten:* ${praktikanten.join(', ')}\\n`;\n    }\n    if (seniors.length > 0) {\n      slackText += `*Seniors:* ${seniors.join(', ')}\\n`;\n    }\n    \n    // Leere Zeile als Abstand zum nächsten Tag\n    slackText += `\\n`; \n  }\n});\n\n// 3. Link zur Tabelle anhängen\nslackText += \"Weitere Informationen findest Du hier:\\n\";\nslackText += \"https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit#gid=0\";\n\nreturn { \n  nachricht: slackText \n};"
+      },
+      "id": "f910eeee-c42e-49e1-adbb-704c711fd840",
+      "name": "Zusammenfassung erstellen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4720,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "GQY1UTYE7",
+          "mode": "list",
+          "cachedResultName": "02_team_allokation"
+        },
+        "text": "={{ $json.nachricht }}",
+        "otherOptions": {}
+      },
+      "id": "d32baefc-d413-46c4-adde-2613fe08527e",
+      "name": "Zusammenfassung in Slack posten",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        5040,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "user",
+        "user": {
+          "__rl": true,
+          "value": "={{ $json.user }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        3408,
+        896
+      ],
+      "id": "3328ffa5-24e6-4824-94ea-9534b92d65ba",
+      "name": "Get information about a user"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3648,
+        672
+      ],
+      "id": "3630c13c-82ff-4e20-bad6-52e9375c4665",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo",
+          "mode": "list",
+          "cachedResultName": "Officebesetzung_Slack_n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Office Plan",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit#gid=0"
+        },
+        "clear": "specificRange",
+        "range": "A2:H100"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2752,
+        400
+      ],
+      "id": "1f801ac6-7a0f-45d8-bca4-28c3752b73ba",
+      "name": "Clear sheet"
+    },
+    {
+      "parameters": {
+        "resource": "channel",
+        "operation": "history",
+        "channelId": {
+          "__rl": true,
+          "value": "C02GJ50DQ2W",
+          "mode": "list",
+          "cachedResultName": "02_prakti_team_allokation"
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        3152,
+        656
+      ],
+      "id": "09d832a2-0e2d-4ff1-94dd-7deb17652608",
+      "name": "Get the history of a channel"
+    },
+    {
+      "parameters": {
+        "resource": "user",
+        "user": {
+          "__rl": true,
+          "value": "={{ $json.user }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        3408,
+        256
+      ],
+      "id": "9c8138b1-39af-4b6e-8f78-1e578bab2980",
+      "name": "Get information about a user1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3648,
+        80
+      ],
+      "id": "045e881d-f440-440b-a932-8315e05cf9ed",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "channel",
+        "operation": "history",
+        "channelId": {
+          "__rl": true,
+          "value": "GQY1UTYE7",
+          "mode": "list",
+          "cachedResultName": "02_team_allokation"
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        3152,
+        64
+      ],
+      "id": "c8e9b5e3-efec-4852-9438-471c9e5f5c66",
+      "name": "Get the history of a channel1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3968,
+        400
+      ],
+      "id": "bdad357b-5d44-4f71-bdcd-0470d54b3de5",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const finalData = {}; \nconst tageMapping = { \n  'mo': 'Montag', 'montag': 'Montag',\n  'di': 'Dienstag', 'dienstag': 'Dienstag',\n  'mi': 'Mittwoch', 'mitt': 'Mittwoch', 'mittwoch': 'Mittwoch',\n  'do': 'Donnerstag', 'donn': 'Donnerstag', 'donnerstag': 'Donnerstag',\n  'fr': 'Freitag', 'freitag': 'Freitag',\n  'sa': 'Samstag', 'samstag': 'Samstag',\n  'so': 'Sonntag', 'sonntag': 'Sonntag'\n};\n\nconst dayIndices = {\n  'mo': 0, 'montag': 0,\n  'di': 1, 'dienstag': 1,\n  'mi': 2, 'mitt': 2, 'mittwoch': 2,\n  'do': 3, 'donn': 3, 'donnerstag': 3,\n  'fr': 4, 'freitag': 4,\n  'sa': 5, 'samstag': 5,\n  'so': 6, 'sonntag': 6\n};\nconst tageArrayShort = ['mo', 'di', 'mi', 'do', 'fr', 'sa', 'so'];\n\n// --- HILFSFUNKTION: STATUS-VALIDIERUNG ---\nfunction isValidStatus(statusText, fullLine, isColonFormat) {\n  if (!statusText) return false;\n  const cleanText = statusText.trim();\n  \n  if (!isColonFormat) {\n    if (cleanText.split(/\\s+/).length > 15 || cleanText.length > 100) return false;\n  }\n\n  const textToCheck = (fullLine || cleanText).toLowerCase();\n  \n  // ERWEITERT: Wörter, die typisch für normale Chat-Nachrichten sind\n  const ignoreWords = [\n    'eintragen', 'tragt', 'denkt dran', 'bitte', 'vergessen', 'erinnerung', \n    'soll man', 'trikot', 'nachricht', 'channel', 'bearbeiten', 'eigene', \n    'einfach', 'löschen', 'thread', 'posten'\n  ];\n  \n  if (ignoreWords.some(word => textToCheck.includes(word))) return false;\n\n  return true;\n}\n\n// --- ZEIT-FILTER LOGIK ---\nconst heute = new Date();\nconst aktuellerWochentag = heute.getDay(); \nconst tageSeitFreitag = (aktuellerWochentag + 2) % 7; \nconst letzterFreitag = new Date(heute);\nletzterFreitag.setDate(heute.getDate() - tageSeitFreitag);\nletzterFreitag.setHours(0, 0, 0, 0);\n\nfor (const item of $input.all()) {\n  const slackTsRaw = item.json.ts;\n  const slackTsMs = parseFloat(slackTsRaw) * 1000;\n  \n  if (slackTsMs < letzterFreitag.getTime()) continue;\n\n  let nameRaw = item.json.profile?.real_name || item.json.real_name || item.json.user || \"Unbekannt\";\n  const name = nameRaw.trim(); \n  \n  const nameKey = name.toLowerCase(); \n\n  // --- AGGRESSIVER BOT-FILTER ---\n  if (\n    nameKey === 'n8n' || \n    nameKey.includes('bot') || \n    item.json.bot_id !== undefined || \n    item.json.bot_profile !== undefined || \n    item.json.subtype === 'bot_message'\n  ) {\n    continue;\n  }\n  \n  let text = item.json.text || \"\";\n\n  // --- ANNOUNCEMENT FILTER ---\n  const lowerTextGlobal = text.toLowerCase();\n  if (['@channel', '<!channel>', '@here', '<!here>'].some(word => lowerTextGlobal.includes(word))) {\n    continue;\n  }\n\n  // --- SLACK EMOJI BEREINIGUNG ---\n  text = text.replace(/:[a-z0-9_+-]+:/gi, '');\n\n  text = text.replace(/\\bhome\\s*office\\b/gi, 'HO');\n\n  const hatWochentag = Object.keys(tageMapping).some(k => \n    new RegExp(`\\\\b${k}\\\\b`, 'i').test(text.toLowerCase())\n  );\n  if (!hatWochentag || !text) continue;\n\n  const dateObj = new Date(slackTsMs);\n  const datumString = dateObj.toLocaleDateString('de-DE', {\n    day: '2-digit', month: '2-digit', year: 'numeric'\n  });\n\n  const row = { \n    Name: name, \n    Datum_Meldung: datumString,\n    Montag: \"\", Dienstag: \"\", Mittwoch: \"\", Donnerstag: \"\", Freitag: \"\", Samstag: \"\", Sonntag: \"\",\n    _ts: slackTsMs \n  };\n\n  const rangeRegex = /\\b(mo|montag|di|dienstag|mi|mitt|mittwoch|do|donn|donnerstag|fr|freitag|sa|samstag|so|sonntag)\\s*(?:-|–|—|bis)\\s*(mo|montag|di|dienstag|mi|mitt|mittwoch|do|donn|donnerstag|fr|freitag|sa|samstag|so|sonntag)\\b/gi;\n  \n  text = text.replace(rangeRegex, (match, p1, p2) => {\n    const start = dayIndices[p1.toLowerCase()];\n    const end = dayIndices[p2.toLowerCase()];\n    if (start !== undefined && end !== undefined && start < end) {\n      return tageArrayShort.slice(start, end + 1).join(' ');\n    }\n    return match;\n  });\n\n  const zeilen = text.split('\\n');\n  zeilen.forEach(zeile => {\n    const lowerZeile = zeile.toLowerCase();\n    \n    if (zeile.includes(':')) {\n      const parts = zeile.split(':');\n      const tageTeil = parts[0].toLowerCase();\n      const status = parts.slice(1).join(':').trim(); \n\n      Object.keys(tageMapping).forEach(k => {\n        if (new RegExp(`\\\\b${k}\\\\b`, 'i').test(tageTeil)) {\n          if (isValidStatus(status, zeile, true)) {\n            row[tageMapping[k]] = status;\n          }\n        }\n      });\n    } else {\n      Object.keys(tageMapping).forEach(k => {\n        if (new RegExp(`\\\\b${k}\\\\b`, 'i').test(lowerZeile)) {\n          let extrakt = zeile.replace(/\\b(mo|montag|di|dienstag|mi|mitt|mittwoch|do|donn|donnerstag|fr|freitag|sa|samstag|so|sonntag)\\b/gi, '')\n                             .replace(/\\b(ab|am|von|für)\\b/gi, '') \n                             .replace(/[,.‑–—-]/g, '')\n                             .replace(/\\bbis\\b/gi, '')\n                             .replace(/\\s{2,}/g, ' ') \n                             .trim();\n          \n          if (extrakt && isValidStatus(extrakt, zeile, false)) {\n            row[tageMapping[k]] = extrakt;\n          }\n        }\n      });\n    }\n  });\n\n  const hatInhalt = Object.keys(row).some(k => \n    k !== 'Name' && k !== 'Datum_Meldung' && k !== '_ts' && row[k] !== \"\"\n  );\n\n  // --- NEU: MERGE-LOGIK STATT STRIKTEM ÜBERSCHREIBEN ---\n  if (hatInhalt) {\n    if (!finalData[nameKey]) {\n      // Neuer Eintrag\n      finalData[nameKey] = row;\n    } else {\n      // Eintrag existiert bereits. Wir prüfen, welche Nachricht jünger ist.\n      if (finalData[nameKey]._ts < row._ts) {\n        // Die NEUE Nachricht ist jünger. Wir überschreiben nur die Tage, die in der neuen Nachricht stehen.\n        Object.keys(row).forEach(key => {\n          if (key !== 'Name' && key !== 'Datum_Meldung' && key !== '_ts' && row[key] !== \"\") {\n            finalData[nameKey][key] = row[key];\n          }\n        });\n        finalData[nameKey]._ts = row._ts;\n        finalData[nameKey].Datum_Meldung = row.Datum_Meldung;\n      } else {\n        // Die BEREITS GESPEICHERTE Nachricht ist jünger. Wir füllen nur Lücken mit den alten Daten auf.\n        Object.keys(row).forEach(key => {\n          if (key !== 'Name' && key !== 'Datum_Meldung' && key !== '_ts' && finalData[nameKey][key] === \"\" && row[key] !== \"\") {\n            finalData[nameKey][key] = row[key];\n          }\n        });\n      }\n    }\n  }\n}\n\nconst finalArray = Object.values(finalData).map(row => {\n  delete row._ts;\n  return row;\n});\n\nreturn finalArray;"
+      },
+      "id": "9b033c7e-c3a5-4b63-8c5f-7ae86347baa2",
+      "name": "Nachrichten parsen1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4208,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C02GJ50DQ2W",
+          "mode": "list",
+          "cachedResultName": "02_prakti_team_allokation"
+        },
+        "text": "={{ $json.nachricht }}",
+        "otherOptions": {}
+      },
+      "id": "d194f82e-e02c-4434-973c-ef298a601ec5",
+      "name": "Zusammenfassung in Slack posten1",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        5024,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 45 17 * * 5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        2512,
+        240
+      ],
+      "id": "be8391e6-9057-4f68-99de-12fe1d59932f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 45 7 * * 1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        2512,
+        400
+      ],
+      "id": "f0b97107-1c47-4a52-bb3a-805a3be35ccc",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 45 7 * * 2"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        2512,
+        560
+      ],
+      "id": "04148aa4-c275-4623-8511-21dfad6913af",
+      "name": "Schedule Trigger2"
+    },
+    {
+      "parameters": {
+        "content": "Der Workflow wird zu drei Zeitpunkten automatisch gestartet:\n\n• Freitag 17:45 Uhr\n• Montag 07:45 Uhr\n• Dienstag 07:45 Uhr"
+      },
+      "id": "sticky-schedule-triggers",
+      "name": "Sticky Note - Schedule Triggers",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2416,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Die alten Ergebnisse werden aus der Google Sheets Tabelle gelöscht (Bereich A2:H100), damit Platz für die neuen Daten ist."
+      },
+      "id": "sticky-clear-sheet",
+      "name": "Sticky Note - Clear sheet",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Alle Nachrichten aus dem Slack-Kanal '02_prakti_team_allokation' werden abgerufen."
+      },
+      "id": "sticky-history-prakti",
+      "name": "Sticky Note - Get history Prakti",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3056,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Alle Nachrichten aus dem Slack-Kanal '02_team_allokation' werden abgerufen."
+      },
+      "id": "sticky-history-team",
+      "name": "Sticky Note - Get history Team",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3056,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Für jede Nachricht aus dem Praktikanten-Kanal wird der echte Name des Absenders über die Slack API abgefragt."
+      },
+      "id": "sticky-user-prakti",
+      "name": "Sticky Note - Get user Prakti",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3312,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Für jede Nachricht aus dem Team-Kanal wird der echte Name des Absenders über die Slack API abgefragt."
+      },
+      "id": "sticky-user-team",
+      "name": "Sticky Note - Get user Team",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3312,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Nachrichten und Benutzerinformationen aus dem Praktikanten-Kanal werden zusammengeführt (nach Position)."
+      },
+      "id": "sticky-merge-prakti",
+      "name": "Sticky Note - Merge Prakti",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3552,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Nachrichten und Benutzerinformationen aus dem Team-Kanal werden zusammengeführt (nach Position)."
+      },
+      "id": "sticky-merge-team",
+      "name": "Sticky Note - Merge Team",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3552,
+        -272
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Die Daten aus beiden Kanälen (Praktikanten + Seniors) werden in einen gemeinsamen Datensatz zusammengeführt."
+      },
+      "id": "sticky-merge2",
+      "name": "Sticky Note - Merge2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3872,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Die Slack-Nachrichten werden per JavaScript analysiert. Wochentage (Mo, Di, Mi...) und der jeweilige Status (Office, HO etc.) werden pro Person extrahiert.\n\nBot-Nachrichten und Ankündigungen werden herausgefiltert. Bei mehreren Nachrichten einer Person wird die jeweils neueste berücksichtigt."
+      },
+      "id": "sticky-nachrichten-parsen",
+      "name": "Sticky Note - Nachrichten parsen",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4112,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Die geparsten Wochenpläne werden in die Google Sheets Tabelle 'Officebesetzung_Slack_n8n' geschrieben (Name + Status pro Wochentag)."
+      },
+      "id": "sticky-google-sheets",
+      "name": "Sticky Note - In Google Sheets eintragen",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4368,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Eine formatierte Slack-Nachricht wird erstellt mit der Übersicht der Bürobesetzung pro Tag (X/12 Plätze), aufgeteilt nach Seniors und Praktikanten.\n\nBei Voll- oder Überbesetzung erscheint eine Warnung."
+      },
+      "id": "sticky-zusammenfassung",
+      "name": "Sticky Note - Zusammenfassung erstellen",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4624,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Die Zusammenfassung wird im Slack-Kanal '02_prakti_team_allokation' gepostet."
+      },
+      "id": "sticky-slack-prakti",
+      "name": "Sticky Note - Slack posten Prakti",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4928,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Die Zusammenfassung wird im Slack-Kanal '02_team_allokation' gepostet."
+      },
+      "id": "sticky-slack-team",
+      "name": "Sticky Note - Slack posten Team",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5008,
+        608
+      ]
+    }
+  ],
+  "connections": {
+    "In Google Sheets eintragen": {
+      "main": [
+        [
+          {
+            "node": "Zusammenfassung erstellen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zusammenfassung erstellen": {
+      "main": [
+        [
+          {
+            "node": "Zusammenfassung in Slack posten1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Zusammenfassung in Slack posten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get information about a user": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Clear sheet": {
+      "main": [
+        [
+          {
+            "node": "Get the history of a channel",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get the history of a channel1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the history of a channel": {
+      "main": [
+        [
+          {
+            "node": "Get information about a user",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get information about a user1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the history of a channel1": {
+      "main": [
+        [
+          {
+            "node": "Get information about a user1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Nachrichten parsen1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nachrichten parsen1": {
+      "main": [
+        [
+          {
+            "node": "In Google Sheets eintragen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
