@@ -1,0 +1,405 @@
+{
+  "updatedAt": "2026-03-20T08:25:14.916Z",
+  "createdAt": "2026-01-26T09:59:47.092Z",
+  "id": "rRQ1mljx7MYaXjrV",
+  "name": "Transfer-News",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -768,
+        96
+      ],
+      "id": "79e39041-8ab7-42c9-b6d0-68cad397a055",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Relevante Daten vorbereiten\nconst yesterday = $now.minus({ days: 1 }).toFormat('dd.MM.yyyy');\nconst currentYear = \"2026\";\nconst results = [];\n\n// Das HTML aus der HTML-Node holen\nconst html = items[0].json.alles;\nif (!html) return [{ json: { fehler: \"Kein HTML gefunden\" } }];\n\n// Wir teilen das HTML in die einzelnen Transfer-Zeilen auf\nconst rows = html.split('<tr class=\"');\n\nfor (let i = 1; i < rows.length; i++) {\n    const row = rows[i];\n    \n    // --- BASIS-DATEN EXTRAHIEREN ---\n    const dateMatch = row.match(/(\\d{2})\\.(\\d{2})\\.(\\d{4})/);\n    const ligaMatches = [...row.matchAll(/<a title=\"([^\"]*)\" href=\"\\/[^\"]*\\/transfers\\/wettbewerb\\/[^\"]*\">/g)];\n    const matches = [...row.matchAll(/<td class=\"hauptlink\"><a title=\"([^\"]*)\" href=\"([^\"]*)\">/g)];\n\n    if (dateMatch && matches.length >= 3) {\n        const tag = dateMatch[1];\n        const monat = dateMatch[2];\n        const jahr = dateMatch[3];\n        const gefundenesDatum = `${tag}.${monat}.${jahr}`;\n        const ligaName = ligaMatches[0] ? ligaMatches[0][1] : \"Unbekannte Liga\";\n        \n        // --- LOGIK-FILTER ---\n        const istJuniorenLiga = ligaName.includes(\"U19\") || ligaName.includes(\"U17\") || ligaName.includes(\"A-Junioren\") || ligaName.includes(\"B-Junioren\");\n        \n        let darfInDieMail = false;\n\n        if (istJuniorenLiga) {\n            // Für Junioren: Alles aus dem Januar 2026\n            if (monat === \"01\" && jahr === currentYear) {\n                darfInDieMail = true;\n            }\n        } else {\n            // Für alle anderen: Nur von gestern\n            if (gefundenesDatum === yesterday) {\n                darfInDieMail = true;\n            }\n        }\n\n        // --- DATEN SPEICHERN WENN FILTER PASST ---\n        if (darfInDieMail) {\n            const baseUrl = \"https://www.transfermarkt.de\";\n            const alterMatch = row.match(/<td class=\"zentriert\">(\\d{2})<\\/td>/);\n            const alter = alterMatch ? alterMatch[1] : \"unbekannt\";\n\n            results.push({\n                json: {\n                    spieler: `<a href=\"${baseUrl}${matches[0][2]}\">${matches[0][1]}</a>`,\n                    spieler_name_rein: matches[0][1],\n                    alter: alter,\n                    von_verein: `<a href=\"${baseUrl}${matches[1][2]}\">${matches[1][1]}</a>`,\n                    zu_verein: `<a href=\"${baseUrl}${matches[2][2]}\">${matches[2][1]}</a>`,\n                    liga: ligaName,\n                    datum: gefundenesDatum,\n                    info: istJuniorenLiga ? \"Junioren-Rückblick\" : \"Tagesaktuell\"\n                }\n            });\n        }\n    }\n}\n\nif (results.length === 0) {\n    return [{ json: { info: \"Keine passenden Transfers gefunden.\" } }];\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        176
+      ],
+      "id": "ba13c0b4-7763-4456-a774-9064fc3addd0",
+      "name": "Code in JavaScript",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -256,
+        96
+      ],
+      "id": "f2141cbb-1916-4681-910e-74479af34d1e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "sendTo": "tim.hungerbach@gokixx.de",
+        "subject": "=Transfernews U23 {{ $now.minus({ days: 1 }).toFormat('dd.MM.yyyy') }}",
+        "message": "={{ $json.htmlMailInhalt }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        48
+      ],
+      "id": "187eb06b-6e70-4c6a-ba56-680b694f5528",
+      "name": "Send a message"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "alles",
+              "cssSelector": "table.items",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        176
+      ],
+      "id": "8a246342-93b6-45fd-8a2e-977758c3c989",
+      "name": "HTML",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const finalResults = [];\n\nfor (const item of items) {\n    const spieler = item.json.spieler;\n    const von = item.json.von_verein;\n    const zu = item.json.zu_verein;\n    const alter = item.json.alter; // Das extrahierte Alter abgreifen\n\n    // WICHTIG: Wir holen die Liga direkt vom Loop-Eingang ab\n    const liga = $node[\"Loop Over Items\"].json[\"Liga\"] || \"Weitere Transfers\";\n\n    // Sicherheitscheck gegen undefined\n    const istUngueltig = !spieler || spieler.includes('undefined') || \n                         !von || von.includes('undefined') || \n                         !zu || zu.includes('undefined');\n\n    if (!istUngueltig) {\n        // Alter formatieren: Wenn vorhanden, in Klammern setzen\n        const alterAnzeige = (alter && alter !== 'unbekannt') ? ` (${alter} Jahre)` : '';\n        \n        // Den Satz zusammenbauen: Alter direkt hinter dem Spieler-Link einfügen\n        const satz = `Bei ${spieler}${alterAnzeige} hat sich der Vereinsstatus von ${von} zu ${zu} geändert.`;\n\n        finalResults.push({\n            json: {\n                email_zeile: satz,\n                liga: liga,\n                datum: item.json.datum\n            }\n        });\n    }\n}\n\nreturn finalResults;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        176
+      ],
+      "id": "46d89bc5-4608-4973-868c-859148471862",
+      "name": "Code in JavaScript1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Alle eingehenden Items holen\nconst items = $input.all();\n\n// 2. Objekt für die Gruppierung nach Ligen\nconst transfersNachLigen = {};\n\nfor (const item of items) {\n  const data = item.json;\n  \n  if (data.email_zeile && data.liga) {\n    // Wir suchen nach der Zahl in der Klammer innerhalb des Satzes, z.B. \"(22 Jahre)\"\n    const alterMatch = data.email_zeile.match(/\\((\\d+)\\s*Jahre\\)/);\n    \n    let istJungGenug = false;\n\n    if (alterMatch) {\n      // Wenn ein Alter gefunden wurde (z.B. 22), prüfen wir auf <= 23\n      const alterZahl = parseInt(alterMatch[1]);\n      if (alterZahl <= 23) {\n        istJungGenug = true;\n      }\n    } else {\n      // Falls gar kein Alter im Satz steht (keine Klammer gefunden), \n      // lassen wir ihn sicherheitshalber drin (U23-Talente ohne Altersangabe)\n      istJungGenug = true;\n    }\n\n    // Nur wenn der Spieler jung genug ist, fügen wir ihn der Liste hinzu\n    if (istJungGenug) {\n      const ligaName = data.liga.trim();\n\n      if (!transfersNachLigen[ligaName]) {\n        transfersNachLigen[ligaName] = [];\n      }\n      \n      transfersNachLigen[ligaName].push(data.email_zeile);\n    }\n  }\n}\n\n// 3. HTML zusammenbauen\nlet htmlBody = `\n<div style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">\n  <p>Guten Morgen Redaktion,</p>\n  <p>anbei die Transfers vom gestrigen Tag (Fokus: U23).</p>\n`;\n\nconst ligenGefunden = Object.keys(transfersNachLigen);\n\nif (ligenGefunden.length === 0) {\n  htmlBody += `<p><em>Gestern wurden keine Transferaktivitäten von Spielern bis 23 Jahren registriert.</em></p>`;\n} else {\n  for (const liga in transfersNachLigen) {\n    htmlBody += `\n      <h2 style=\"background-color: #f8f9fa; padding: 8px 12px; border-left: 4px solid #1a3151; margin-top: 25px; font-size: 18px;\">\n        ${liga}\n      </h2>\n    `;\n    \n    htmlBody += `<ul style=\"padding-left: 20px; margin-bottom: 20px;\">`;\n    \n    for (const transferSatz of transfersNachLigen[liga]) {\n      htmlBody += `<li style=\"margin-bottom: 8px;\">${transferSatz}</li>`;\n    }\n    \n    htmlBody += `</ul>`;\n  }\n}\n\nhtmlBody += `\n  <p style=\"margin-top: 30px;\">Beste Grüße und bis morgen!</p>\n</div>\n`;\n\nreturn {\n  htmlMailInhalt: htmlBody\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        48
+      ],
+      "id": "ba7b4442-78f6-4c2d-add2-bb62a63c01fb",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "18Sr9WmKw6_MJPBPw0D1bTYA2B4WuNTVeBRDZnl1D0BM",
+          "mode": "list",
+          "cachedResultName": "Transferübersicht Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Sr9WmKw6_MJPBPw0D1bTYA2B4WuNTVeBRDZnl1D0BM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Tabellenblatt1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Sr9WmKw6_MJPBPw0D1bTYA2B4WuNTVeBRDZnl1D0BM/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -464,
+        96
+      ],
+      "id": "84ea9704-c84c-4898-8350-b6aea492c551",
+      "name": "Übersicht Ligen"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['Transfermarkt Link'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        32,
+        176
+      ],
+      "id": "e76f7e30-b89d-48f1-8e61-fb914ec707d3",
+      "name": "TM-Website",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "content": "**Schedule Trigger**\n\nStartet automatisch jeden Tag um 08:15 Uhr.\nKann auch manuell per Klick ausgelöst werden.",
+        "height": 192
+      },
+      "id": "sticky-tn-schedule",
+      "name": "Sticky Note - Schedule Trigger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**Übersicht Ligen**\n\nLädt die Liste der zu überwachenden Ligen aus dem Google Sheet 'Transferübersicht Test' (Tabellenblatt1).\n\nJede Zeile enthält einen Liga-Namen und den zugehörigen Transfermarkt-Link."
+      },
+      "id": "sticky-tn-ligen",
+      "name": "Sticky Note - Übersicht Ligen",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**Loop Over Items**\n\nIteriert über jede Liga einzeln.\nPro Durchlauf wird die Transfermarkt-Seite einer Liga abgerufen und verarbeitet."
+      },
+      "id": "sticky-tn-loop",
+      "name": "Sticky Note - Loop Over Items",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**TM-Website (HTTP Request)**\n\nRuft die Transfermarkt-Transferseite der aktuellen Liga ab.\nVerwendet einen Browser-User-Agent, um Sperren zu vermeiden.\nDie Antwort wird als Text (HTML) zurückgegeben."
+      },
+      "id": "sticky-tn-http",
+      "name": "Sticky Note - TM-Website",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**HTML (Extract)**\n\nExtrahiert die Transfer-Tabelle ('table.items') aus dem Transfermarkt-HTML.\nDas Ergebnis ist der reine HTML-Inhalt der Tabelle."
+      },
+      "id": "sticky-tn-html",
+      "name": "Sticky Note - HTML Extraktion",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**Code in JavaScript (Transfer-Parser)**\n\nParst die Transfer-Tabelle und extrahiert: Spieler (mit Link), Alter, abgebender Verein, aufnehmender Verein, Liga und Datum.\n\nFilter-Logik:\n• Junioren-Ligen (U19, U17, A/B-Junioren): Alle Transfers aus Januar 2026\n• Alle anderen Ligen: Nur Transfers von gestern"
+      },
+      "id": "sticky-tn-parse",
+      "name": "Sticky Note - Code in JavaScript",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        336,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**Code in JavaScript1 (Satz-Formatierung)**\n\nFormatiert jeden Transfer als lesbaren HTML-Satz:\n'Bei [Spieler] (XX Jahre) hat sich der Vereinsstatus von [Alt] zu [Neu] geändert.'\n\nUngültige Einträge (mit undefined) werden herausgefiltert."
+      },
+      "id": "sticky-tn-format",
+      "name": "Sticky Note - Code in JavaScript1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        544,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**Code in JavaScript2 (Aggregation & U23-Filter)**\n\nSammelt alle Transfers, filtert auf U23 (≤ 23 Jahre) und gruppiert sie nach Liga.\n\nBaut die fertige HTML-E-Mail zusammen:\n• Begrüßung an die Redaktion\n• Pro Liga eine Überschrift mit blauem Seitenbalken\n• Darunter die einzelnen Transfers als Aufzählung\n\nFalls keine Transfers: Hinweistext 'Keine Transferaktivitäten'."
+      },
+      "id": "sticky-tn-aggregate",
+      "name": "Sticky Note - Code in JavaScript2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "content": "**Send a message (Gmail)**\n\nVersendet die formatierte Transfer-Mail per Gmail an tim.hungerbach@gokixx.de.\n\nBetreff: 'Transfernews U23 DD.MM.YYYY' (Datum von gestern)."
+      },
+      "id": "sticky-tn-email",
+      "name": "Sticky Note - Send a message",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -288
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Übersicht Ligen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "TM-Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Übersicht Ligen": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TM-Website": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
