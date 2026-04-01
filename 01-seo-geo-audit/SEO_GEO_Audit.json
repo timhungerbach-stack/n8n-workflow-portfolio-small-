@@ -1,0 +1,398 @@
+{
+  "updatedAt": "2026-02-17T17:05:55.068Z",
+  "createdAt": "2026-02-09T21:50:06.735Z",
+  "id": "3gdAssV9iRAUr3HI",
+  "name": "SEO & GEO Audit",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Conversion Rate Optimizer",
+        "formDescription": "Your Landing Page is Leaking Sales—Fix It Now",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Landing Page Url",
+              "placeholder": "https://yuzuu.co",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f4a971be-a961-4ad6-b38d-830c5fca5407",
+      "name": "Landing Page Url",
+      "type": "n8n-nodes-base.formTrigger",
+      "position": [
+        128,
+        592
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['Landing Page Url'] }}",
+        "options": {}
+      },
+      "id": "e280139f-94b8-49dc-91e7-c6ffa0c04716",
+      "name": "Scrape Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        384,
+        592
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "id": "3d172f93-7d94-4a43-9403-5cec799bbe47",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1264,
+        560
+      ],
+      "typeVersion": 3,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "output"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2081bf62-0e47-497e-8a3e-d30d330f6a9d",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        1504,
+        592
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "=# On-Page SEO Technical Audit\n{{ $json.output[0] }}\n\n# On-Page SEO Content Audit\n{{ $json.output[1] }}\n\n# On-Page GEO Technical Audit\n{{ $json.output[2] }}\n\n# On-Page GEO Content Audit\n{{ $json.output[3] }}",
+        "options": {}
+      },
+      "id": "e1cfc16e-e0dc-4298-9b94-ffb7f23b45aa",
+      "name": "Markdown",
+      "type": "n8n-nodes-base.markdown",
+      "position": [
+        1696,
+        592
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "tim.hungerbach@gokixx.de",
+        "subject": "=On-Page SEO & GEO Audit -  {{ $('Landing Page Url').item.json['Landing Page Url'] }}",
+        "message": "={{ $json.data }}",
+        "options": {}
+      },
+      "id": "3242a0c3-4439-4ad1-8185-47185046080d",
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1888,
+        592
+      ],
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        864,
+        256
+      ],
+      "id": "91fac0a9-471f-415a-a12f-038a47c2c457",
+      "name": "OpenRouter Chat Model"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        848,
+        528
+      ],
+      "id": "b7127f40-be81-4234-bef5-d71c7b6ac62f",
+      "name": "OpenRouter Chat Model1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist der beste SEO-Manager des Landes – ein erstklassiger Experte für die Optimierung von Websites für Top-Rankings bei Google.\n\nDeine Aufgabe ist es, den HTML-Code einer Webseite zu analysieren und ein detailliertes, strukturiertes technisches On-Page-SEO-Audit durchzuführen.\n\nAudit-Struktur Du wirst alle technischen SEO-Aspekte der Seite überprüfen. Sobald dies abgeschlossen ist, präsentierst du deine Ergebnisse und Empfehlungen in klaren, organisierten Aufzählungspunkten, unterteilt in drei Kategorien:\n\nKritische Fehler – Müssen sofort behoben werden.\n\nQuick Wins – Einfache Korrektionen mit großer Wirkung.\n\nOptimierungspotenziale – Erfordern mehr Aufwand, bieten aber langfristige Vorteile.\n\nStelle sicher, dass die Ausgabe sauber formatiert und hervorragend lesbar ist. Füge keinerlei Einleitungs- oder Erklärungstexte hinzu – nur die reinen Audit-Ergebnisse.\n\nHier ist der Inhalt meiner Landingpage: {{ $json.data }}",
+        "options": {}
+      },
+      "id": "b693e35c-c0d4-4202-8c5e-2a5646a16cc4",
+      "name": "Technical Audit SEO",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        864,
+        128
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        848,
+        816
+      ],
+      "id": "bbd76995-7bd3-4d0a-b089-da630e8e7ea9",
+      "name": "OpenRouter Chat Model2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist der weltweit führende Experte für Generative Engine Optimization (GEO). Deine Aufgabe ist es, eine Webseite daraufhin zu prüfen, wie gut sie von KI-Modellen (wie ChatGPT, Claude, Gemini) gecrawlt, verstanden und als Antwortquelle genutzt werden kann.\n\nAudit-Struktur: Analysiere den HTML-Code und die Struktur der Seite. Präsentiere deine Ergebnisse in drei Kategorien:\n\nKritische Barrieren – Elemente, die KI-Crawler blockieren oder verwirren (z.B. komplexe JS-Strukturen, fehlende semantische Tags).\n\nKI-Lesbarkeit (Struktur) – Wie gut sind Fakten, Daten und Kernbotschaften für ein LLM extrahierbar? (Prüfung von Schema.org, Tabellen, Listen).\n\nZitierfähigkeit – Sind Quellen, Autoren und Daten so ausgezeichnet, dass eine KI sie als Referenz nutzen kann?\n\nGib das Ergebnis in sauberen Bullet Points aus. Erstelle keine Einleitung oder erklärenden Text – nur die Audit-Ergebnisse.\n\nHier ist der Inhalt der Landingpage: {{ $json.data }}",
+        "options": {}
+      },
+      "id": "3d2970d1-f45c-4301-b299-87e56c5c388d",
+      "name": "Technical Audit GEO",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        848,
+        688
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        848,
+        1104
+      ],
+      "id": "8b499ace-ef2f-4974-84e5-52d1a8b3717c",
+      "name": "OpenRouter Chat Model3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist ein führender Experte für Generative Engine Optimization (GEO) und Content-Strategie. Deine Aufgabe ist es, den Inhalt der Webseite auf seine Relevanz für KI-generierte Antworten zu prüfen.\n\nAudit-Struktur: Teile dein Audit in 2 Teile auf:\n\nTeil 1: Analyse\n\nFakten-Dichte & Präzision: Enthält der Text klare, statistisch untermauerte oder faktische Aussagen, die eine KI direkt zitieren kann?\n\nE-E-A-T Check (Expertise, Experience, Authoritativeness, Trustworthiness): Wirkt der Inhalt für ein KI-Modell vertrauenswürdig? Gibt es klare Experten-Signale?\n\nSynthetische Relevanz: Wie gut beantwortet der Content spezifische \"Natural Language Queries\" (komplexe Nutzerfragen)?\n\nTeil 2: Empfehlungen\n\nGib konkrete, umsetzbare Vorschläge, um die Wahrscheinlichkeit zu erhöhen, in KI-Antworten (z.B. Perplexity Citations oder Google AI Overviews) erwähnt zu werden. Fokus auf: Einbindung von Zitaten, Optimierung für direkte Antworten und Autoritäts-Signale.\n\nGib das Ergebnis in sauberen Bullet Points aus. Erstelle keine Einleitung oder erklärenden Text – nur die Audit-Ergebnisse.\n\nHier ist der Inhalt der Landingpage: {{ $json.data }}",
+        "options": {}
+      },
+      "id": "7aedaafa-da2e-4e4f-b584-9bbf0830a8ef",
+      "name": "Content Audit GEO",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        848,
+        960
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist der beste SEO-Manager des Landes – ein erstklassiger Experte für die Optimierung von Websites für Top-Rankings bei Google.\n\nDeine Aufgabe ist es, den Inhalt der Webseite zu analysieren und ein detailliertes, strukturiertes SEO-Content-Audit durchzuführen.\n\nAudit-Struktur Unterteile dein Audit in zwei Teile:\n\nDer erste Teil ist die Analyse.\n\nDer zweite Teil sind die Empfehlungen.\n\nDie Analyse muss Folgendes enthalten:\n\nBewertung der Inhaltsqualität: Beurteile die Gesamtqualität, Genauigkeit und Relevanz des Inhalts für die Zielgruppe.\n\nKeyword-Analyse: Identifiziere primäre und sekundäre Keywords sowie die Keyword-Dichte und Platzierungsstrategien.\n\nLesbarkeitsanalyse: Bewerten die Lesbarkeit des Inhalts anhand von Metriken wie dem Flesch-Reading-Ease, dem Flesch-Kincaid-Grade-Level oder dem Gunning-Fog-Index.\n\nIn den Empfehlungen präsentierst du deine Vorschläge und Maßnahmen in klaren, organisierten Aufzählungspunkten. Die Empfehlungen müssen darauf abzielen, sowohl das Google-Ranking als auch das Nutzerengagement zu verbessern.\n\nStelle sicher, dass die Ausgabe sauber formatiert und hervorragend lesbar ist. Füge keinerlei Einleitungs- oder Erklärungstexte hinzu – nur die reinen Audit-Ergebnisse.\n\nHier ist der Inhalt meiner Landingpage: {{ $json.data }}",
+        "options": {}
+      },
+      "id": "0f135a2d-156c-43ee-b254-581c7d543a8c",
+      "name": "Content Audit SEO",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        848,
+        400
+      ],
+      "typeVersion": 1.7
+    }
+  ],
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Website": {
+      "main": [
+        [
+          {
+            "node": "Technical Audit SEO",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Content Audit SEO",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Technical Audit GEO",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Content Audit GEO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Landing Page Url": {
+      "main": [
+        [
+          {
+            "node": "Scrape Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Technical Audit SEO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Audit SEO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical Audit SEO": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Technical Audit GEO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical Audit GEO": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Audit GEO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Audit GEO": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Content Audit SEO": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateId": "3224",
+    "templateCredsSetupCompleted": true
+  }
+}
