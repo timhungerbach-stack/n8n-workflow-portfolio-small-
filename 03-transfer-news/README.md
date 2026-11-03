@@ -2,6 +2,8 @@
 
 Täglicher Transfer-Report für die Scouting-Redaktion: Der Workflow ruft die Transferseiten ausgewählter Ligen bei Transfermarkt ab, filtert auf U23-Spieler und verschickt jeden Morgen eine fertig formatierte E-Mail.
 
+![Transfer-News Workflow in n8n](img/workflow.png)
+
 ## Was macht der Workflow?
 
 1. **Trigger:** Startet automatisch jeden Tag um 08:15 Uhr (alternativ manuell)
