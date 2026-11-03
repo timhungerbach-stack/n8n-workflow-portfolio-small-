@@ -32,3 +32,7 @@ Automatisierter Website-Audit, der eine URL entgegennimmt und über 4 parallele 
 ## Nodes
 
 14 (davon 4 AI-Agents, 4 LLM-Modelle)
+
+## Herkunft
+
+Ausgangspunkt war eine Vorlage aus der n8n-Community (Template #3224), die ich an meine Anforderungen angepasst habe.

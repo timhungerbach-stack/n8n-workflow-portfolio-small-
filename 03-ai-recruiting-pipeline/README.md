@@ -37,3 +37,7 @@ KI-gestützte Recruiting-Pipeline: Von der Jobbeschreibung über die Kandidatens
 ## Nodes
 
 40 (davon 6 LLM-Nodes, 3 LangChain Chains, 3 Output Parser)
+
+## Herkunft
+
+Ausgangspunkt war eine Vorlage aus der n8n-Community (Template #8292), die ich an meine Anforderungen angepasst habe.

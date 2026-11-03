@@ -56,7 +56,7 @@
     },
     {
       "parameters": {
-        "sendTo": "tim.hungerbach@gokixx.de",
+        "sendTo": "deine.email@beispiel.de",
         "subject": "=Transfernews U23 {{ $now.minus({ days: 1 }).toFormat('dd.MM.yyyy') }}",
         "message": "={{ $json.htmlMailInhalt }}",
         "options": {}
@@ -125,17 +125,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "18Sr9WmKw6_MJPBPw0D1bTYA2B4WuNTVeBRDZnl1D0BM",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Transferübersicht Test",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Sr9WmKw6_MJPBPw0D1bTYA2B4WuNTVeBRDZnl1D0BM/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Tabellenblatt1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18Sr9WmKw6_MJPBPw0D1bTYA2B4WuNTVeBRDZnl1D0BM/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit#gid=0"
         },
         "options": {}
       },
@@ -285,7 +285,7 @@
     },
     {
       "parameters": {
-        "content": "**Send a message (Gmail)**\n\nVersendet die formatierte Transfer-Mail per Gmail an tim.hungerbach@gokixx.de.\n\nBetreff: 'Transfernews U23 DD.MM.YYYY' (Datum von gestern)."
+        "content": "**Send a message (Gmail)**\n\nVersendet die formatierte Transfer-Mail per Gmail an deine.email@beispiel.de.\n\nBetreff: 'Transfernews U23 DD.MM.YYYY' (Datum von gestern)."
       },
       "id": "sticky-tn-email",
       "name": "Sticky Note - Send a message",

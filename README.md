@@ -1,12 +1,12 @@
 # n8n Workflow Portfolio — Tim Hungerbach
 
-Dieses Repository zeigt eine Auswahl meiner n8n-Workflows. Alle Workflows wurden von mir eigenständig konzipiert, gebaut und dokumentiert.
+Dieses Repository zeigt eine Auswahl meiner n8n-Workflows. Ich habe sie selbst gebaut und dokumentiert; zwei davon (SEO & GEO Audit, AI Recruiting Pipeline) basieren auf Vorlagen aus der n8n-Community, die ich für meine Zwecke angepasst habe.
 
 ## Über mich
 
-Ich automatisiere seit Anfang 2026 Geschäftsprozesse mit n8n, KI-APIs und Low-Code-Tools. Bei der GOKIXX GmbH habe ich n8n als unternehmensweite Plattform eingeführt und 11 API-Schnittstellen angebunden. Parallel baue ich eigene Workflows für verschiedene Use Cases.
+Ich automatisiere seit Oktober 2025 Geschäftsprozesse mit n8n, KI-APIs und Low-Code-Tools. Bei der GOKIXX GmbH habe ich n8n als unternehmensweite Plattform eingeführt und 11 API-Schnittstellen angebunden. Parallel baue ich eigene Workflows für verschiedene Use Cases. Code-Bausteine (JavaScript) entwickle ich mit KI-Unterstützung.
 
-**Tech-Stack:** n8n, OpenAI API, Anthropic API, OpenRouter, Google Workspace (Sheets, Calendar, Gmail), Slack, Salesforce, Pipedrive, Airtable, Apollo.io, Python, JavaScript
+**Tech-Stack:** n8n, OpenAI API, Anthropic API (Claude), OpenRouter, Google Workspace (Sheets, Calendar, Gmail), Slack, Salesforce, Pipedrive, Airtable, Apollo.io, JavaScript in Code-Nodes (KI-gestützt)
 
 ## Workflows
 
@@ -20,7 +20,7 @@ Ich automatisiere seit Anfang 2026 Geschäftsprozesse mit n8n, KI-APIs und Low-C
 
 ## Hinweis
 
-Die Workflow-JSONs enthalten keine Credentials oder API-Keys. Zur Nutzung müssen eigene Zugangsdaten hinterlegt werden.
+Die Workflow-JSONs enthalten keine Credentials, API-Keys oder internen Daten. IDs von Google Sheets, Kalendern, Slack-Channels und Airtable sind durch Platzhalter wie `DEINE_GOOGLE_SHEET_ID` ersetzt. Zur Nutzung müssen eigene Zugangsdaten und IDs hinterlegt werden.
 
 ## Kontakt
 

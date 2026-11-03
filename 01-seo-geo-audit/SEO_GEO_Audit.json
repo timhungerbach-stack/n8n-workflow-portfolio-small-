@@ -96,7 +96,7 @@
     },
     {
       "parameters": {
-        "sendTo": "tim.hungerbach@gokixx.de",
+        "sendTo": "deine.email@beispiel.de",
         "subject": "=On-Page SEO & GEO Audit -  {{ $('Landing Page Url').item.json['Landing Page Url'] }}",
         "message": "={{ $json.data }}",
         "options": {}

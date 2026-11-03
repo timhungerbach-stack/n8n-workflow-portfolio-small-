@@ -1,34 +1,35 @@
-# Office Belegung Tracker
+# Transfer-News
 
-Automatisierte Bürobelegungsübersicht: Liest Slack-Nachrichten aus Team- und Praktikanten-Channels, parst die Anwesenheitsmeldungen und postet eine tägliche Zusammenfassung zurück in Slack + Google Sheets.
+Täglicher Transfer-Report für die Scouting-Redaktion: Der Workflow ruft die Transferseiten ausgewählter Ligen bei Transfermarkt ab, filtert auf U23-Spieler und verschickt jeden Morgen eine fertig formatierte E-Mail.
 
 ## Was macht der Workflow?
 
-1. **Trigger:** 3 Schedule Trigger für unterschiedliche Zeitpunkte (z.B. Wochentage)
-2. **Reset:** Google Sheet wird zu Beginn geleert
-3. **Slack auslesen:** Channel-History wird aus zwei Slack-Channels gelesen (Team + Praktikanten)
-4. **User-Info:** Slack-User-IDs werden mit Klarnamen aufgelöst
-5. **Zusammenführung:** Nachrichten und User-Infos werden gemerged
-6. **Parsing:** JavaScript-Code parst die Nachrichten und erkennt, wer im Office ist, wer remote arbeitet, wer nicht da ist
-7. **Google Sheets:** Die Ergebnisse werden in ein Tracking-Sheet geschrieben
-8. **Zusammenfassung:** Eine formatierte Übersicht wird erstellt
-9. **Slack-Post:** Die Zusammenfassung wird in zwei Channels gepostet (Team + Praktikanten)
+1. **Trigger:** Startet automatisch jeden Tag um 08:15 Uhr (alternativ manuell)
+2. **Ligen laden:** Die zu überwachenden Ligen samt Transfermarkt-Link kommen aus einem Google Sheet
+3. **Loop:** Jede Liga wird einzeln verarbeitet
+4. **Scraping:** Die Transferseite der Liga wird per HTTP Request abgerufen (mit Browser-User-Agent)
+5. **Extraktion:** Die Transfer-Tabelle wird aus dem HTML herausgelöst
+6. **Parsing:** Spieler, Alter, abgebender und aufnehmender Verein, Liga und Datum werden ausgelesen
+7. **Formatierung:** Jeder Transfer wird als lesbarer Satz aufbereitet
+8. **Filter & Aggregation:** Nur Spieler bis 23 Jahre, gruppiert nach Liga
+9. **Output:** Versand als HTML-E-Mail per Gmail, Betreff „Transfernews U23 TT.MM.JJJJ“
 
 ## Genutzte Nodes & Integrationen
 
-- **Schedule Trigger (3x)** — Zeitgesteuert an verschiedenen Wochentagen
-- **Slack (5x)** — Channel History lesen, User-Info abrufen, Zusammenfassung posten
-- **Google Sheets (2x)** — Sheet leeren + Ergebnisse schreiben
-- **Merge (3x)** — Nachrichten mit User-Infos zusammenführen
-- **Code (2x)** — Nachrichtenparser + Zusammenfassung formatieren
+- **Schedule Trigger** — tägliche Ausführung
+- **Google Sheets** — Liste der überwachten Ligen
+- **Split In Batches** — Verarbeitung Liga für Liga
+- **HTTP Request** — Abruf der Transfermarkt-Seiten
+- **HTML** — Extraktion der Transfer-Tabelle
+- **Code (3x)** — Parsing, Formatierung, U23-Filter und Aufbau der E-Mail
+- **Gmail** — Versand des Reports
 
 ## Besonderheiten
 
-- Zwei getrennte Channel-Pipelines (Team + Praktikanten) die am Ende zusammenlaufen
-- Automatische Namensauflösung von Slack-User-IDs
-- Tägliche Übersicht ohne manuellen Aufwand
-- Output in zwei Formaten: Google Sheets (Archiv) + Slack (sofortige Sichtbarkeit)
+- Neue Ligen lassen sich ohne Änderung am Workflow ergänzen: einfach eine Zeile im Google Sheet hinzufügen
+- Ersetzt das manuelle Durchklicken mehrerer Transferseiten jeden Morgen
+- Ausführliche Notizen direkt im Workflow erklären jeden Schritt
 
 ## Nodes
 
-30 (davon 5 Slack-Nodes, 3 Merge-Nodes, 2 Code-Nodes)
+18 (davon 3 Code-Nodes, 9 Notizen zur Dokumentation)

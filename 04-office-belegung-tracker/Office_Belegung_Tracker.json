@@ -12,17 +12,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Officebesetzung_Slack_n8n",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Office Plan",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit#gid=0"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -129,7 +129,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];\nconst planung = { Montag: [], Dienstag: [], Mittwoch: [], Donnerstag: [], Freitag: [] };\nconst MAX_PLAETZE = 12;\n\n// Liste der Seniors (jeder, der nicht hier drin steht, wird als Praktikant gewertet)\nconst SENIORS_LIST = [\n  \"Felix Funken\", \"Robin Bermbach\", \"Nils Hinzmann\", \n  \"Leonard Feldkamp\", \"Hendrik Schons\", \"Daniel Ries\", \n  \"Lennart Klein\", \"Maik Stein\", \"Julius Gräfe\",\n  \"Benno Duvenhorst\", \"Peter Marek\", \"Jannes Hundertmark\", \n  \"Stefan Göke\", \"Florian Schell\"\n];\n\n// 1. Daten sammeln (Wer ist im Office?)\nfor (const item of $input.all()) {\n  tage.forEach(tag => {\n    const status = (item.json[tag] || \"\").toLowerCase();\n    // Wir zählen jeden, bei dem \"office\" im Status vorkommt\n    if (status.includes('office')) {\n      planung[tag].push(item.json.Name);\n    }\n  });\n}\n\n// 2. Slack-Nachricht zusammenbauen\nlet slackText = \"Hallo zusammen <!channel>! 👋\\nAnbei die Office-Besetzung für die nächste Woche:\\n\\n\";\n\ntage.forEach(tag => {\n  const tagesListe = planung[tag];\n  const belegtePlaetze = tagesListe.length;\n  \n  // Warnmeldung generieren, falls das Limit erreicht oder überschritten ist\n  let warnung = \"\";\n  if (belegtePlaetze === MAX_PLAETZE) {\n    warnung = \" ⚠️ *VOLL BELEGT!*\";\n  } else if (belegtePlaetze > MAX_PLAETZE) {\n    warnung = ` 🚨 *ÜBERBELEGT!* (um ${belegtePlaetze - MAX_PLAETZE} Personen)`;\n  }\n\n  // Zeile formatieren: Wochentag (X/12): + Warnung\n  slackText += `*${tag}* (${belegtePlaetze}/${MAX_PLAETZE}):${warnung}\\n`;\n\n  if (belegtePlaetze === 0) {\n    // Falls niemand da ist\n    slackText += `_Keiner im Büro_\\n\\n`;\n  } else {\n    // Aufteilung in Seniors und Praktikanten\n    const seniors = tagesListe.filter(name => SENIORS_LIST.includes(name));\n    const praktikanten = tagesListe.filter(name => !SENIORS_LIST.includes(name));\n\n    // Kategorien nur ausgeben, wenn auch Personen darin vorhanden sind (mit fettgedruckten Labels)\n    if (praktikanten.length > 0) {\n      slackText += `*Praktikanten:* ${praktikanten.join(', ')}\\n`;\n    }\n    if (seniors.length > 0) {\n      slackText += `*Seniors:* ${seniors.join(', ')}\\n`;\n    }\n    \n    // Leere Zeile als Abstand zum nächsten Tag\n    slackText += `\\n`; \n  }\n});\n\n// 3. Link zur Tabelle anhängen\nslackText += \"Weitere Informationen findest Du hier:\\n\";\nslackText += \"https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit#gid=0\";\n\nreturn { \n  nachricht: slackText \n};"
+        "jsCode": "const tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];\nconst planung = { Montag: [], Dienstag: [], Mittwoch: [], Donnerstag: [], Freitag: [] };\nconst MAX_PLAETZE = 12;\n\n// Liste der Seniors (jeder, der nicht hier drin steht, wird als Praktikant gewertet)\nconst SENIORS_LIST = [\n  \"Senior 1\", \"Senior 2\", \"Senior 3\", \n  \"Senior 4\", \"Senior 5\", \"Senior 6\", \n  \"Senior 7\", \"Senior 8\", \"Senior 9\",\n  \"Senior 10\", \"Senior 11\", \"Senior 12\", \n  \"Senior 13\", \"Senior 14\"\n];\n\n// 1. Daten sammeln (Wer ist im Office?)\nfor (const item of $input.all()) {\n  tage.forEach(tag => {\n    const status = (item.json[tag] || \"\").toLowerCase();\n    // Wir zählen jeden, bei dem \"office\" im Status vorkommt\n    if (status.includes('office')) {\n      planung[tag].push(item.json.Name);\n    }\n  });\n}\n\n// 2. Slack-Nachricht zusammenbauen\nlet slackText = \"Hallo zusammen <!channel>! 👋\\nAnbei die Office-Besetzung für die nächste Woche:\\n\\n\";\n\ntage.forEach(tag => {\n  const tagesListe = planung[tag];\n  const belegtePlaetze = tagesListe.length;\n  \n  // Warnmeldung generieren, falls das Limit erreicht oder überschritten ist\n  let warnung = \"\";\n  if (belegtePlaetze === MAX_PLAETZE) {\n    warnung = \" ⚠️ *VOLL BELEGT!*\";\n  } else if (belegtePlaetze > MAX_PLAETZE) {\n    warnung = ` 🚨 *ÜBERBELEGT!* (um ${belegtePlaetze - MAX_PLAETZE} Personen)`;\n  }\n\n  // Zeile formatieren: Wochentag (X/12): + Warnung\n  slackText += `*${tag}* (${belegtePlaetze}/${MAX_PLAETZE}):${warnung}\\n`;\n\n  if (belegtePlaetze === 0) {\n    // Falls niemand da ist\n    slackText += `_Keiner im Büro_\\n\\n`;\n  } else {\n    // Aufteilung in Seniors und Praktikanten\n    const seniors = tagesListe.filter(name => SENIORS_LIST.includes(name));\n    const praktikanten = tagesListe.filter(name => !SENIORS_LIST.includes(name));\n\n    // Kategorien nur ausgeben, wenn auch Personen darin vorhanden sind (mit fettgedruckten Labels)\n    if (praktikanten.length > 0) {\n      slackText += `*Praktikanten:* ${praktikanten.join(', ')}\\n`;\n    }\n    if (seniors.length > 0) {\n      slackText += `*Seniors:* ${seniors.join(', ')}\\n`;\n    }\n    \n    // Leere Zeile als Abstand zum nächsten Tag\n    slackText += `\\n`; \n  }\n});\n\n// 3. Link zur Tabelle anhängen\nslackText += \"Weitere Informationen findest Du hier:\\n\";\nslackText += \"https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit#gid=0\";\n\nreturn { \n  nachricht: slackText \n};"
       },
       "id": "f910eeee-c42e-49e1-adbb-704c711fd840",
       "name": "Zusammenfassung erstellen",
@@ -200,17 +200,17 @@
         "operation": "clear",
         "documentId": {
           "__rl": true,
-          "value": "1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Officebesetzung_Slack_n8n",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Office Plan",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TYX0pCCechJWBDwIsaS58_8KM8xtmNA9bzrWcsFVbIo/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit#gid=0"
         },
         "clear": "specificRange",
         "range": "A2:H100"
@@ -230,7 +230,7 @@
         "operation": "history",
         "channelId": {
           "__rl": true,
-          "value": "C02GJ50DQ2W",
+          "value": "DEINE_SLACK_CHANNEL_ID",
           "mode": "list",
           "cachedResultName": "02_prakti_team_allokation"
         },
@@ -329,7 +329,7 @@
         "select": "channel",
         "channelId": {
           "__rl": true,
-          "value": "C02GJ50DQ2W",
+          "value": "DEINE_SLACK_CHANNEL_ID",
           "mode": "list",
           "cachedResultName": "02_prakti_team_allokation"
         },

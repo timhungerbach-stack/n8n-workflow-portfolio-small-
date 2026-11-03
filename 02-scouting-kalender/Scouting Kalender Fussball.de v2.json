@@ -48,9 +48,9 @@
         "operation": "getAll",
         "calendar": {
           "__rl": true,
-          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "value": "DEINE_KALENDER_ID@group.calendar.google.com",
           "mode": "list",
-          "cachedResultName": "Scouting Kalender Stefan"
+          "cachedResultName": "Scouting Kalender"
         },
         "returnAll": true,
         "timeMin": "={{ $now.minus({days: 90}).toISO() }}",
@@ -152,9 +152,9 @@
         "operation": "delete",
         "calendar": {
           "__rl": true,
-          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "value": "DEINE_KALENDER_ID@group.calendar.google.com",
           "mode": "list",
-          "cachedResultName": "Scouting Kalender Stefan"
+          "cachedResultName": "Scouting Kalender"
         },
         "eventId": "={{ $json.eventId }}",
         "options": {}
@@ -202,17 +202,17 @@
         "operation": "clear",
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 2027564139,
           "mode": "list",
           "cachedResultName": "Alle Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit#gid=2027564139"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit#gid=2027564139"
         },
         "clear": "specificRows",
         "startIndex": 2,
@@ -247,17 +247,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Overview",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk#gid=0"
         },
         "options": {}
       },
@@ -405,10 +405,10 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -482,9 +482,9 @@
         "operation": "update",
         "calendar": {
           "__rl": true,
-          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "value": "DEINE_KALENDER_ID@group.calendar.google.com",
           "mode": "list",
-          "cachedResultName": "Scouting Kalender Stefan"
+          "cachedResultName": "Scouting Kalender"
         },
         "eventId": "={{ $json.existing_event_id }}",
         "updateFields": {
@@ -506,10 +506,10 @@
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -554,10 +554,10 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -630,15 +630,15 @@
       "parameters": {
         "calendar": {
           "__rl": true,
-          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "value": "DEINE_KALENDER_ID@group.calendar.google.com",
           "mode": "list",
-          "cachedResultName": "Scouting Kalender Stefan"
+          "cachedResultName": "Scouting Kalender"
         },
         "start": "={{ $json.start_isogoogle }}",
         "end": "={{ DateTime.fromISO($json.start_isogoogle).plus({ hours: 2 }).toISO({ includeOffset: false }) }}",
         "additionalFields": {
           "attendees": [
-            "tim.hungerbach@gokixx.de"
+            "deine.email@beispiel.de"
           ],
           "description": "=Wettbewerb: {{ $json.wettbewerb }}\nGegner: {{ $json.gegner }}\nAcademy-Spieler: {{ $json.alle_spieler }}\n\n[n8n-scouting]",
           "location": "={{ $json.stadion_adresse }}",
@@ -659,9 +659,9 @@
       "parameters": {
         "calendar": {
           "__rl": true,
-          "value": "c_25fa3386f5e5727694e9e8d84c6099f58fe02cc74afbe17b19651a2b15e33454@group.calendar.google.com",
+          "value": "DEINE_KALENDER_ID@group.calendar.google.com",
           "mode": "list",
-          "cachedResultName": "Scouting Kalender Stefan"
+          "cachedResultName": "Scouting Kalender"
         },
         "start": "={{ $json.start_isogoogle }}",
         "end": "={{ DateTime.fromISO($json.start_isogoogle).plus({ hours: 2 }).toISO({ includeOffset: false }) }}",
@@ -687,10 +687,10 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -824,10 +824,10 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -958,10 +958,10 @@
         "operation": "clear",
         "documentId": {
           "__rl": true,
-          "value": "1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw",
+          "value": "DEINE_GOOGLE_SHEET_ID",
           "mode": "list",
           "cachedResultName": "Scouting Kalender Fußball.de Spiele",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pXv01FhKxPTGb3IaXERkmt1PBJXGCSN4WWheSLTpsPw/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/DEINE_GOOGLE_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -984,7 +984,7 @@
     },
     {
       "parameters": {
-        "content": "## 📝 Kalender & Sheets schreiben\nFC Bayern → mit Attendee (tim.hungerbach@gokixx.de).\nAndere → ohne Attendee.\n→ Spieler-Sheet + Alle Spiele Sheet pro Event.",
+        "content": "## 📝 Kalender & Sheets schreiben\nFC Bayern → mit Attendee (deine.email@beispiel.de).\nAndere → ohne Attendee.\n→ Spieler-Sheet + Alle Spiele Sheet pro Event.",
         "height": 130,
         "width": 900
       },

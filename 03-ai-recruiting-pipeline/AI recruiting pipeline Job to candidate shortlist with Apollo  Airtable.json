@@ -361,15 +361,15 @@
         "base": {
           "__rl": true,
           "mode": "list",
-          "value": "appe7RcePt0Nv0Oar",
-          "cachedResultUrl": "https://airtable.com/appe7RcePt0Nv0Oar",
+          "value": "DEINE_AIRTABLE_BASE_ID",
+          "cachedResultUrl": "https://airtable.com/DEINE_AIRTABLE_BASE_ID",
           "cachedResultName": "Candidate Search - From Job Description"
         },
         "table": {
           "__rl": true,
           "mode": "list",
           "value": "tblg5upaJXNvBVCcK",
-          "cachedResultUrl": "https://airtable.com/appe7RcePt0Nv0Oar/tblg5upaJXNvBVCcK",
+          "cachedResultUrl": "https://airtable.com/DEINE_AIRTABLE_BASE_ID/tblg5upaJXNvBVCcK",
           "cachedResultName": "Candidates"
         },
         "columns": {
@@ -775,17 +775,17 @@
         "operation": "create",
         "base": {
           "__rl": true,
-          "value": "app9mLmgAxGk3apTL",
+          "value": "DEINE_AIRTABLE_BASE_ID",
           "mode": "list",
           "cachedResultName": "Candidate Search - From Job Subscription",
-          "cachedResultUrl": "https://airtable.com/app9mLmgAxGk3apTL"
+          "cachedResultUrl": "https://airtable.com/DEINE_AIRTABLE_BASE_ID"
         },
         "table": {
           "__rl": true,
           "value": "tblKHEncxGtRTD6lG",
           "mode": "list",
           "cachedResultName": "Job Searches",
-          "cachedResultUrl": "https://airtable.com/app9mLmgAxGk3apTL/tblKHEncxGtRTD6lG"
+          "cachedResultUrl": "https://airtable.com/DEINE_AIRTABLE_BASE_ID/tblKHEncxGtRTD6lG"
         },
         "columns": {
           "mappingMode": "defineBelow",
