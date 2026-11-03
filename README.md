@@ -1,22 +1,20 @@
 # n8n Workflow Portfolio — Tim Hungerbach
 
-Dieses Repository zeigt eine Auswahl meiner n8n-Workflows. Ich habe sie selbst gebaut und dokumentiert; zwei davon (SEO & GEO Audit, AI Recruiting Pipeline) basieren auf Vorlagen aus der n8n-Community, die ich für meine Zwecke angepasst habe.
+Dieses Repository zeigt eine Auswahl meiner n8n-Workflows. Alle drei habe ich während meines Praktikums bei der GOKIXX GmbH selbst konzipiert, gebaut und dokumentiert – für echte Abläufe im Team.
 
 ## Über mich
 
 Ich automatisiere seit Oktober 2025 Geschäftsprozesse mit n8n, KI-APIs und Low-Code-Tools. Bei der GOKIXX GmbH habe ich n8n als unternehmensweite Plattform eingeführt und 11 API-Schnittstellen angebunden. Parallel baue ich eigene Workflows für verschiedene Use Cases. Code-Bausteine (JavaScript) entwickle ich mit KI-Unterstützung.
 
-**Tech-Stack:** n8n, OpenAI API, Anthropic API (Claude), OpenRouter, Google Workspace (Sheets, Calendar, Gmail), Slack, Salesforce, Pipedrive, Airtable, Apollo.io, JavaScript in Code-Nodes (KI-gestützt)
+**Tech-Stack:** n8n, OpenAI API, Anthropic API (Claude), Google Workspace (Sheets, Calendar, Gmail), Slack, Salesforce, Pipedrive, JavaScript in Code-Nodes (KI-gestützt)
 
 ## Workflows
 
-| # | Workflow | Nodes | Beschreibung |
+| # | Workflow | Nodes | Problem → Lösung |
 |---|---------|-------|-------------|
-| 01 | [SEO & GEO Audit](./01-seo-geo-audit/) | 14 | KI-gestützter Website-Audit mit 4 parallelen AI-Agents |
-| 02 | [Scouting Kalender](./02-scouting-kalender/) | 40 | Automatischer Spielkalender aus Fussball.de → Google Calendar |
-| 03 | [AI Recruiting Pipeline](./03-ai-recruiting-pipeline/) | 40 | Kandidatensuche, KI-Scoring und Outreach via Apollo & Airtable |
-| 04 | [Office Belegung Tracker](./04-office-belegung-tracker/) | 30 | Slack-Nachrichten → Google Sheets + tägliche Zusammenfassung |
-| 05 | [Transfer-News](./05-transfer-news/) | 18 | Web Scraping von Transfermarkt mit E-Mail-Report |
+| 01 | [Scouting Kalender](./01-scouting-kalender/) | 40 | Scouts mussten Spieltermine ihrer Spieler selbst suchen und eintragen → Spielpläne von Fussball.de landen automatisch im Google Calendar |
+| 02 | [Office Belegung Tracker](./02-office-belegung-tracker/) | 30 | Mehr Mitarbeitende als Büroplätze → jeden Sonntagabend automatisch die Belegung der Woche im Slack-Channel, inkl. Warnung bei Überbelegung |
+| 03 | [Transfer-News](./03-transfer-news/) | 18 | Transferseiten mehrerer Ligen manuell durchklicken → jeden Morgen ein fertiger U23-Transfer-Report per E-Mail |
 
 ## Hinweis
 
