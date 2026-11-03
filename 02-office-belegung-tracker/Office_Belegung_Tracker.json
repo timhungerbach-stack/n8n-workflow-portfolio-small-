@@ -123,8 +123,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        4464,
-        400
+        2180,
+        811
       ]
     },
     {
@@ -136,8 +136,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4720,
-        400
+        2480,
+        811
       ]
     },
     {
@@ -158,8 +158,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.2,
       "position": [
-        5040,
-        816
+        2780,
+        149
       ]
     },
     {
@@ -174,8 +174,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.4,
       "position": [
-        3408,
-        896
+        980,
+        1305
       ],
       "id": "3328ffa5-24e6-4824-94ea-9534b92d65ba",
       "name": "Get information about a user"
@@ -189,8 +189,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3648,
-        672
+        1280,
+        1305
       ],
       "id": "3630c13c-82ff-4e20-bad6-52e9375c4665",
       "name": "Merge"
@@ -218,8 +218,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2752,
-        400
+        380,
+        811
       ],
       "id": "1f801ac6-7a0f-45d8-bca4-28c3752b73ba",
       "name": "Clear sheet"
@@ -239,8 +239,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.4,
       "position": [
-        3152,
-        656
+        680,
+        1305
       ],
       "id": "09d832a2-0e2d-4ff1-94dd-7deb17652608",
       "name": "Get the history of a channel"
@@ -257,8 +257,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.4,
       "position": [
-        3408,
-        256
+        980,
+        149
       ],
       "id": "9c8138b1-39af-4b6e-8f78-1e578bab2980",
       "name": "Get information about a user1"
@@ -272,8 +272,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3648,
-        80
+        1280,
+        149
       ],
       "id": "045e881d-f440-440b-a932-8315e05cf9ed",
       "name": "Merge1"
@@ -294,8 +294,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.4,
       "position": [
-        3152,
-        64
+        680,
+        149
       ],
       "id": "c8e9b5e3-efec-4852-9438-471c9e5f5c66",
       "name": "Get the history of a channel1"
@@ -305,8 +305,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3968,
-        400
+        1580,
+        811
       ],
       "id": "bdad357b-5d44-4f71-bdcd-0470d54b3de5",
       "name": "Merge2"
@@ -320,8 +320,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4208,
-        400
+        1880,
+        811
       ]
     },
     {
@@ -341,8 +341,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.2,
       "position": [
-        5024,
-        400
+        2780,
+        1305
       ]
     },
     {
@@ -359,8 +359,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        2512,
-        240
+        80,
+        661
       ],
       "id": "be8391e6-9057-4f68-99de-12fe1d59932f",
       "name": "Schedule Trigger"
@@ -379,8 +379,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        2512,
-        400
+        80,
+        811
       ],
       "id": "f0b97107-1c47-4a52-bb3a-805a3be35ccc",
       "name": "Schedule Trigger1"
@@ -399,192 +399,220 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        2512,
-        560
+        80,
+        961
       ],
       "id": "04148aa4-c275-4623-8511-21dfad6913af",
       "name": "Schedule Trigger2"
     },
     {
       "parameters": {
-        "content": "Der Workflow wird zu drei Zeitpunkten automatisch gestartet:\n\n• Freitag 17:45 Uhr\n• Montag 07:45 Uhr\n• Dienstag 07:45 Uhr"
+        "content": "Der Workflow wird zu drei Zeitpunkten automatisch gestartet:\n\n• Freitag 17:45 Uhr\n• Montag 07:45 Uhr\n• Dienstag 07:45 Uhr",
+        "width": 260,
+        "height": 752
       },
       "id": "sticky-schedule-triggers",
       "name": "Sticky Note - Schedule Triggers",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2416,
-        -112
+        0,
+        344
       ]
     },
     {
       "parameters": {
-        "content": "Die alten Ergebnisse werden aus der Google Sheets Tabelle gelöscht (Bereich A2:H100), damit Platz für die neuen Daten ist."
+        "content": "Die alten Ergebnisse werden aus der Google Sheets Tabelle gelöscht (Bereich A2:H100), damit Platz für die neuen Daten ist.",
+        "width": 260,
+        "height": 752
       },
       "id": "sticky-clear-sheet",
       "name": "Sticky Note - Clear sheet",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2656,
-        64
+        300,
+        344
       ]
     },
     {
       "parameters": {
-        "content": "Alle Nachrichten aus dem Slack-Kanal '02_prakti_team_allokation' werden abgerufen."
+        "content": "Alle Nachrichten aus dem Slack-Kanal '02_prakti_team_allokation' werden abgerufen.",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-history-prakti",
       "name": "Sticky Note - Get history Prakti",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3056,
-        320
+        600,
+        1156
       ]
     },
     {
       "parameters": {
-        "content": "Alle Nachrichten aus dem Slack-Kanal '02_team_allokation' werden abgerufen."
+        "content": "Alle Nachrichten aus dem Slack-Kanal '02_team_allokation' werden abgerufen.",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-history-team",
       "name": "Sticky Note - Get history Team",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3056,
-        -288
+        600,
+        0
       ]
     },
     {
       "parameters": {
-        "content": "Für jede Nachricht aus dem Praktikanten-Kanal wird der echte Name des Absenders über die Slack API abgefragt."
+        "content": "Für jede Nachricht aus dem Praktikanten-Kanal wird der echte Name des Absenders über die Slack API abgefragt.",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-user-prakti",
       "name": "Sticky Note - Get user Prakti",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3312,
-        560
+        900,
+        1156
       ]
     },
     {
       "parameters": {
-        "content": "Für jede Nachricht aus dem Team-Kanal wird der echte Name des Absenders über die Slack API abgefragt."
+        "content": "Für jede Nachricht aus dem Team-Kanal wird der echte Name des Absenders über die Slack API abgefragt.",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-user-team",
       "name": "Sticky Note - Get user Team",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3312,
-        -96
+        900,
+        0
       ]
     },
     {
       "parameters": {
-        "content": "Nachrichten und Benutzerinformationen aus dem Praktikanten-Kanal werden zusammengeführt (nach Position)."
+        "content": "Nachrichten und Benutzerinformationen aus dem Praktikanten-Kanal werden zusammengeführt (nach Position).",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-merge-prakti",
       "name": "Sticky Note - Merge Prakti",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3552,
-        336
+        1200,
+        1156
       ]
     },
     {
       "parameters": {
-        "content": "Nachrichten und Benutzerinformationen aus dem Team-Kanal werden zusammengeführt (nach Position)."
+        "content": "Nachrichten und Benutzerinformationen aus dem Team-Kanal werden zusammengeführt (nach Position).",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-merge-team",
       "name": "Sticky Note - Merge Team",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3552,
-        -272
+        1200,
+        0
       ]
     },
     {
       "parameters": {
-        "content": "Die Daten aus beiden Kanälen (Praktikanten + Seniors) werden in einen gemeinsamen Datensatz zusammengeführt."
+        "content": "Die Daten aus beiden Kanälen (Praktikanten + Seniors) werden in einen gemeinsamen Datensatz zusammengeführt.",
+        "width": 260,
+        "height": 752
       },
       "id": "sticky-merge2",
       "name": "Sticky Note - Merge2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3872,
-        64
+        1500,
+        344
       ]
     },
     {
       "parameters": {
-        "content": "Die Slack-Nachrichten werden per JavaScript analysiert. Wochentage (Mo, Di, Mi...) und der jeweilige Status (Office, HO etc.) werden pro Person extrahiert.\n\nBot-Nachrichten und Ankündigungen werden herausgefiltert. Bei mehreren Nachrichten einer Person wird die jeweils neueste berücksichtigt."
+        "content": "Die Slack-Nachrichten werden per JavaScript analysiert. Wochentage (Mo, Di, Mi...) und der jeweilige Status (Office, HO etc.) werden pro Person extrahiert.\n\nBot-Nachrichten und Ankündigungen werden herausgefiltert. Bei mehreren Nachrichten einer Person wird die jeweils neueste berücksichtigt.",
+        "width": 260,
+        "height": 752
       },
       "id": "sticky-nachrichten-parsen",
       "name": "Sticky Note - Nachrichten parsen",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4112,
-        64
+        1800,
+        344
       ]
     },
     {
       "parameters": {
-        "content": "Die geparsten Wochenpläne werden in die Google Sheets Tabelle 'Officebesetzung_Slack_n8n' geschrieben (Name + Status pro Wochentag)."
+        "content": "Die geparsten Wochenpläne werden in die Google Sheets Tabelle 'Officebesetzung_Slack_n8n' geschrieben (Name + Status pro Wochentag).",
+        "width": 260,
+        "height": 752
       },
       "id": "sticky-google-sheets",
       "name": "Sticky Note - In Google Sheets eintragen",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4368,
-        64
+        2100,
+        344
       ]
     },
     {
       "parameters": {
-        "content": "Eine formatierte Slack-Nachricht wird erstellt mit der Übersicht der Bürobesetzung pro Tag (X/12 Plätze), aufgeteilt nach Seniors und Praktikanten.\n\nBei Voll- oder Überbesetzung erscheint eine Warnung."
+        "content": "Eine formatierte Slack-Nachricht wird erstellt mit der Übersicht der Bürobesetzung pro Tag (X/12 Plätze), aufgeteilt nach Seniors und Praktikanten.\n\nBei Voll- oder Überbesetzung erscheint eine Warnung.",
+        "width": 260,
+        "height": 752
       },
       "id": "sticky-zusammenfassung",
       "name": "Sticky Note - Zusammenfassung erstellen",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4624,
-        64
+        2400,
+        344
       ]
     },
     {
       "parameters": {
-        "content": "Die Zusammenfassung wird im Slack-Kanal '02_prakti_team_allokation' gepostet."
+        "content": "Die Zusammenfassung wird im Slack-Kanal '02_prakti_team_allokation' gepostet.",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-slack-prakti",
       "name": "Sticky Note - Slack posten Prakti",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4928,
-        64
+        2700,
+        1156
       ]
     },
     {
       "parameters": {
-        "content": "Die Zusammenfassung wird im Slack-Kanal '02_team_allokation' gepostet."
+        "content": "Die Zusammenfassung wird im Slack-Kanal '02_team_allokation' gepostet.",
+        "width": 260,
+        "height": 284
       },
       "id": "sticky-slack-team",
       "name": "Sticky Note - Slack posten Team",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5008,
-        608
+        2700,
+        0
       ]
     }
   ],

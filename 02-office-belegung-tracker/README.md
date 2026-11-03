@@ -2,6 +2,8 @@
 
 Automatisierte Bürobelegungsübersicht: Liest Slack-Nachrichten aus Team- und Praktikanten-Channels, parst die Anwesenheitsmeldungen und postet eine tägliche Zusammenfassung zurück in Slack + Google Sheets.
 
+![Office Belegung Tracker Workflow in n8n](img/workflow.png)
+
 ## Was macht der Workflow?
 
 1. **Trigger:** 3 Schedule Trigger für unterschiedliche Zeitpunkte (z.B. Wochentage)

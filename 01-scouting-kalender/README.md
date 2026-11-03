@@ -2,6 +2,8 @@
 
 Automatisierter Spielkalender für Fußball-Scouting: Liest Spielerlisten aus Google Sheets, scraped deren Spielpläne von Fussball.de und erstellt Google Calendar Events — inklusive Deduplizierung und Rate Limiting.
 
+![Scouting Kalender Workflow in n8n](img/workflow.png)
+
 ## Was macht der Workflow?
 
 1. **Trigger:** Läuft nach Schedule (zeitgesteuert)
