@@ -1,6 +1,6 @@
 # n8n Workflow Portfolio — Tim Hungerbach
 
-Dieses Repository zeigt eine Auswahl meiner n8n-Workflows. Alle drei habe ich während meines Praktikums bei der GOKIXX GmbH selbst konzipiert, gebaut und dokumentiert – für echte Abläufe im Team.
+Dieses Repository zeigt eine Auswahl meiner n8n-Workflows. Alle drei habe ich während meines Praktikums bei der GOKIXX GmbH selbst konzipiert, gebaut und dokumentiert.
 
 ## Über mich
 
